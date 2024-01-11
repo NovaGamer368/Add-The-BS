@@ -14,7 +14,7 @@ const port = 3001;
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded());
+//app.use(express.urlencoded());
 
 app.use(
     cors({
@@ -76,10 +76,13 @@ app.use(
 
   app.post("/createUser", async (req, res) => {
     const { email, username, password } = req.body;
+
+    console.log("Received Request Body:", req.body);
   
     try {
       const key = dal.generateKey(); 
       const result = await dal.createUser(email, key, username, password); 
+      console.log("Create User Result:", result);
       
       if (result) {
         res.json({ success: true, key: key });
