@@ -94,4 +94,8 @@ exports.DAL = {
        comparePasswords: async (inputPassword, hashedPassword) => {
         return await bcrypt.compare(inputPassword, hashedPassword);
       },
+      filename: function (req, file, cb) {
+        const sanitizedFilename = sanitize(file.originalname);
+        cb(null, sanitizedFilename);
+      },
 }

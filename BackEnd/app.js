@@ -43,21 +43,10 @@ app.use(
   
   const upload = multer({ storage: storage });
   
-  const postImageStorage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'public/images/posts');
-    },
-    filename: function (req, file, cb) {
-      const sanitizedFilename = sanitize(file.originalname);
-      cb(null, sanitizedFilename);
-    },
-  });
-  
-  const postImageUpload = multer({ storage: postImageStorage });
-  
   
   app.use(express.static('public'));
 
+  //UPDATE
   app.put("/user/:id", upload.single('Img'), async (req, res) => {
     try {
       const userId = req.params.id;
@@ -74,6 +63,7 @@ app.use(
     }
   });
 
+  //CREATE
   app.post("/createUser", async (req, res) => {
     const { email, username, password } = req.body;
 
@@ -95,7 +85,7 @@ app.use(
     }
   });
   
-  
+  //ADMIN STUFF???
   app.post("/createKey", async (req, res) => {
     const email = req.body.email;
   
@@ -120,6 +110,7 @@ app.use(
     }
   });
 
+  // GETS ALL USERS
   app.get("/users", async (req, res) => {
     try {
       const users = await dal.getAllUsers();
@@ -130,6 +121,7 @@ app.use(
     }
   });
 
+  //GTES USER BY ID
   app.get("/user/:id", async (req, res) => {
     try {
         let id = req.params.id;
@@ -141,6 +133,7 @@ app.use(
     }
   });
 
+  //LOGIN STUFF
   app.post("/login", async (req, res) => {
     const { email, password } = req.body;
   
