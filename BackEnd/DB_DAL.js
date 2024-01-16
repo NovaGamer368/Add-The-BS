@@ -2,8 +2,15 @@ const { mongoose, Schema } = require("mongoose");
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
 
-const connectionString = "mongodb+srv://quillianrenae:8YDtlJxCKoZrlfgo@cluster0.sv3zblq.mongodb.net/";
-const collectionOne = "Users"
+const connectionString = "mongodb+srv://johnstonharlea:I62V4Lsg3tjSkxzC@cluster0.ryaxisq.mongodb.net/User";
+const collectionOne = "users"
+
+mongoose.connect(connectionString, {useUnifiedTopology: true, useNewUrlParser: true});
+
+const connection = mongoose.connection;
+connection.once("open", () => {
+    console.log("Mongoose Connected")
+});
 
 const user = new Schema(
     {
@@ -16,7 +23,7 @@ const user = new Schema(
     { collection: collectionOne }
   );
   
-  const UserModel = mongoose.model("user", user);
+  const UserModel = mongoose.model("User", user);
 
 exports.DAL = {
 
@@ -63,10 +70,15 @@ exports.DAL = {
           Gmail: email,
           Username: username,
           Img: "/images/profile-pictures/default-user.png", 
-          Password: await bcrypt.hash(password, 10),
+          Password: password,
+
+          //await bcrypt.hash(password, 10)
         };
+      
+        console.log("New User Object:", newUser);
+      
         try {
-          const result = await UserModel.create(newUser); 
+          const result = await UserModel.create(newUser);
           return result; 
         } catch (error) {
           console.log("Error creating user:", error);

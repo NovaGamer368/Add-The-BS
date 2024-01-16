@@ -1,3 +1,4 @@
+const MovieDB_DAL = require('./MovieDB_DAL');
 const express = require("express");
 const session = require("express-session"); 
 const cors = require("cors");
@@ -6,13 +7,14 @@ const multer = require('multer');
 const sanitize = require('sanitize-filename');
 
 const dal = require ("./DB_DAL").DAL;
+const movieDB = new MovieDB_DAL;
 
 const port = 3001;
 
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded());
+//app.use(express.urlencoded());
 
 app.use(
     cors({
@@ -74,10 +76,13 @@ app.use(
 
   app.post("/createUser", async (req, res) => {
     const { email, username, password } = req.body;
+
+    console.log("Received Request Body:", req.body);
   
     try {
       const key = dal.generateKey(); 
       const result = await dal.createUser(email, key, username, password); 
+      console.log("Create User Result:", result);
       
       if (result) {
         res.json({ success: true, key: key });
@@ -135,7 +140,7 @@ app.use(
         res.status(500).json({ error: 'Internal server error' });
     }
   });
-  
+
   app.post("/login", async (req, res) => {
     const { email, password } = req.body;
   
@@ -159,7 +164,20 @@ app.use(
       res.status(500).json({ success: false, Message: "An error occurred during login" });
     }
   });
+
+  // MOVIE DB THINGS
+  movieDB.authenticate();
   
+  app.get("/MovieDB/getMovies/:pageNum", async(req, res) => {
+    try {
+        let pageNum = req.params.pageNum;
+        let movies = await movieDB.getMovies(pageNum)
+        res.json(movies)
+      }catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'DataBase Error' });
+    }
+  });
   
   app.listen(port, () => {
     console.log(`Server is listening on port: ${port}`);
