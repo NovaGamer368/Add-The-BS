@@ -178,7 +178,47 @@ app.use(
         res.status(500).json({ error: 'DataBase Error' });
     }
   });
-  
+
+  app.get("/MovieDB/getSimpleMovies/:pageNum", async(req, res) => {
+    try {
+        let pageNum = req.params.pageNum;
+        let movies = await movieDB.getSimpleMovies(pageNum)
+        res.json(movies)
+      }catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'DataBase Error' });
+    }
+  });
+  app.get("/MovieDB/getGenreList", async(req, res) => {
+    try {
+        let movies = await movieDB.getMovieByGenre()
+        res.json(movies)
+      }catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'DataBase Error' });
+    }
+  });
+  app.get("/MovieDB/Actor/:id", async(req, res) => {
+    try {
+        let id = req.params.id;
+        let movies = await movieDB.getActorById(id)
+        res.json(movies)
+      }catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'DataBase Error' });
+    }
+  });
+  app.get("/MovieDB/ActorName/:name", async(req, res) => {
+    try {
+        let name = req.params.name;
+        console.log("name is: ", name)
+        let movies = await movieDB.getActorByName(name)
+        res.json(movies)
+      }catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'DataBase Error' });
+    }
+  });
   app.listen(port, () => {
     console.log(`Server is listening on port: ${port}`);
-  });
+  });   
