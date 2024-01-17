@@ -24,7 +24,7 @@ const Navbar = () => {
                         </form>
                     </div>
                     <div className="flex items-center">
-                        <a href="/" className="text-xl font-medium text-blue-600 dark:text-blue-500 hover:underline">Login</a>
+                        <a href="/login" className="text-xl font-medium text-blue-600 dark:text-blue-500 hover:underline">Login</a>
                     </div>
                 </div>
             </nav>
