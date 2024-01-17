@@ -70,9 +70,8 @@ exports.DAL = {
           Gmail: email,
           Username: username,
           Img: "/images/profile-pictures/default-user.png", 
-          Password: password,
+          Password: await bcrypt.hash(password, 10),
 
-          //await bcrypt.hash(password, 10)
         };
       
         console.log("New User Object:", newUser);
