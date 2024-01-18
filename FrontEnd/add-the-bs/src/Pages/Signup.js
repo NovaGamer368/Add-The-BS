@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
@@ -18,7 +17,6 @@ const Signup = () => {
         },
         body: JSON.stringify({
           email: email,
-          username: username,
           password: password,
         }),
       });
