@@ -80,12 +80,10 @@ app.post("/createUser", async (req, res) => {
     }
   } catch (error) {
     console.error("Error creating user:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        Message: "An error occurred while creating the user",
-      });
+    res.status(500).json({
+      success: false,
+      Message: "An error occurred while creating the user",
+    });
   }
 });
 
@@ -218,6 +216,27 @@ app.get("/MovieDB/ActorName/:name", async (req, res) => {
     res.status(500).json({ error: "DataBase Error" });
   }
 });
+app.get("/MovieDB/trending", async (req, res) => {
+  try {
+    let movies = await movieDB.getTrendingMovies();
+    res.json(movies);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "DataBase Error" });
+  }
+});
+app.get("/MovieDB/MovieName/:name", async (req, res) => {
+  try {
+    let name = req.params.name;
+    console.log("name is: ", name);
+    let movies = await movieDB.getMovieByName(name);
+    res.json(movies);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "DataBase Error" });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is listening on port: ${port}`);
 });
