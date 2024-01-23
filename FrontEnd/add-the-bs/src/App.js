@@ -9,7 +9,7 @@ function App() {
   const [movieData, setMovieData] = useState([]);
 
     useEffect(() => {
-      fetch(`http://localhost:3000/MovieDB/getMovies/1`)
+      fetch(`http://localhost:3001/MovieDB/getMovies/1`)
       .then(response => response.json())
       .then(data => {
           setMovieData(data);
@@ -29,10 +29,11 @@ function App() {
         {/* display data below */}
         <div>
         <h2>Now Playing Movies</h2>
-          <ul>
-            {movieData.map((movie) => (
-              <li key={movie.id}>{movie.title}</li>
-            ))}
+        <ul>
+            {Array.isArray(movieData) &&
+              movieData.map((movie) => (
+                <li key={movie.id}>{movie.title}</li>
+              ))}
           </ul>
         </div>
       </header>
