@@ -25,7 +25,7 @@ const Login = () => {
       if (data.success) {
         sessionStorage.setItem('sessionKey', data.key);
         sessionStorage.setItem('userId', data.userId);
-        navigate('/');
+        navigate('/home');
       } else {
         console.log('Login failed:', data.Message);
         setLogin(false)

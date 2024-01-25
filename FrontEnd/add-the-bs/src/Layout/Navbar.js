@@ -4,7 +4,7 @@ const Navbar = () => {
     return (
         <>
         <div>
-            <nav className="dark:bg-gray-900">
+            <nav className="bg-gray-900">
                 <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl px-4 md:px-6 py-2.5">
                     <a href="/home" className="flex items-center">
                         <span className="self-center text-3xl font-semibold whitespace-nowrap dark:text-white">Flowbite</span>
