@@ -236,6 +236,28 @@ app.get("/MovieDB/MovieName/:name", async (req, res) => {
     res.status(500).json({ error: "DataBase Error" });
   }
 });
+app.get("/MovieDB/Movie/Recommend/:movieId", async (req, res) => {
+  try {
+    let movieId = req.params.movieId;
+    console.log("movieId is: ", movieId);
+    let movies = await movieDB.getMovieRecommendations(movieId);
+    res.json(movies);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "DataBase Error" });
+  }
+});
+app.get("/MovieDB/Movie/Similar/:movieId", async (req, res) => {
+  try {
+    let movieId = req.params.movieId;
+    console.log("movieId is: ", movieId);
+    let movies = await movieDB.getSimilarMovie(movieId);
+    res.json(movies);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "DataBase Error" });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server is listening on port: ${port}`);
