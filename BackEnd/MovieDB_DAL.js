@@ -188,6 +188,44 @@ class MovieDB_DAL {
       throw error;
     }
   }
+  async getMovieRecommendations(movieId) {
+    try {
+      const url = `${this.baseURL}movie/${movieId}/recommendations?language=en-US&page=1`;
+      console.log(url);
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${this.apiKey}`,
+          accept: "application/json",
+        },
+      });
+
+      const data = await response.json();
+      return data;
+    } catch (e) {
+      console.log("ERROR WITH API:", e.message);
+      throw e;
+    }
+  }
+  async getSimilarMovie(movieId) {
+    try {
+      const url = `${this.baseURL}movie/${movieId}/similar?language=en-US&page=1`;
+      console.log(url);
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${this.apiKey}`,
+          accept: "application/json",
+        },
+      });
+
+      const data = await response.json();
+      return data;
+    } catch (e) {
+      console.log("ERROR WITH API:", e.message);
+      throw e;
+    }
+  }
 }
 
 module.exports = MovieDB_DAL;
