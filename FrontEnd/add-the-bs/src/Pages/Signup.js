@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [signup, setSignup] = useState(null);
+  const [login, setLogin] = useState(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -28,6 +30,7 @@ const Signup = () => {
         navigate('/');
       } else {
         console.log('Signup failed:', data.Message);
+        setSignup(false);
       }
 
     const loginResponse = await fetch('http://localhost:3001/login', {
@@ -49,6 +52,7 @@ const Signup = () => {
         navigate('/');
       } else {
         console.log('Login after sign-up failed:', loginData.Message);
+        setLogin(false);
       }
     } catch (error) {
       console.error('An error occurred during sign-up:', error);
@@ -76,7 +80,12 @@ const Signup = () => {
                     </form>
                 </div>
                 <div>
-                  <p class="mt-2 text-sm text-red-600 dark:text-red-500"><span class="font-medium">Oh, snapp!</span> Some error message.</p>
+                  {signup === false && (
+                    <p class="mt-2 text-sm text-red-600 dark:text-red-500"><span class="font-medium">Oh, snapp!</span> There was an error signing you up.</p>
+                  )}
+                  {login === false && (
+                    <p class="mt-2 text-sm text-red-600 dark:text-red-500"><span class="font-medium">Oh, snapp!</span> There was an error logining you in.</p>
+                  )}
                 </div>
             </header>
         </div>

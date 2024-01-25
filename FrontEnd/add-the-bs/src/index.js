@@ -10,7 +10,7 @@ import Login from './Pages/Login';
 import Signup from './Pages/Signup';
 
 const router = createBrowserRouter([
-  { path: "/",
+  { path: "/home",
     element:<><Navbar/><App/><Footer/></>
   },
   {
@@ -18,7 +18,7 @@ const router = createBrowserRouter([
     element:<><Login/></>
   },
   {
-    path: "signup",
+    path: "/",
     element:<><Signup/></>
   }
 ])
