@@ -8,6 +8,7 @@ import Navbar from './Layout/Navbar';
 import Footer from './Layout/Footer';
 import Login from './Pages/Login';
 import Signup from './Pages/Signup';
+import Profile from './Pages/Profile';
 
 const router = createBrowserRouter([
   { path: "/home",
@@ -20,6 +21,11 @@ const router = createBrowserRouter([
   {
     path: "/",
     element:<><Signup/></>
+  }
+  ,
+  {
+    path: "/profile",
+    element:<><Profile/></>
   }
 ])
 
