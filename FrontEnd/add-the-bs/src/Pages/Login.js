@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [login, setLogin] = useState(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -20,15 +21,14 @@ const Login = () => {
           password: password,
         }),
       });
-
       const data = await response.json();
-
       if (data.success) {
         sessionStorage.setItem('sessionKey', data.key);
         sessionStorage.setItem('userId', data.userId);
         navigate('/');
       } else {
         console.log('Login failed:', data.Message);
+        setLogin(false)
       }
     } catch (error) {
       console.error('An error occurred during login:', error);
@@ -54,6 +54,11 @@ const Login = () => {
                         </div>
                         <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
                     </form>
+                </div>
+                <div>
+                  {login === false && (
+                    <p className='text-danger'>User does not exist</p>
+                  )}
                 </div>
             </header>
         </div>
