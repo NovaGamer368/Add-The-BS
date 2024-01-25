@@ -48,10 +48,8 @@ function Profile() {
                     <button>Edit Profile</button>
                 </Link>
             </div>
-
             {isAdmin && (
               <div>
-
               </div>
             )}
             {!isAdmin && ( 
