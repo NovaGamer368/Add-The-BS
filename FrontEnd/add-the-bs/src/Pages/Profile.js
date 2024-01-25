@@ -34,9 +34,7 @@ function Profile() {
   
   return (
     <div className=''>
-      <div>
-{/*         <Nav/> */}
-      </div>
+      <header className="App-header">
       <div>
         {user ? (
           <div>
@@ -65,6 +63,7 @@ function Profile() {
           <p>Loading user data...</p>
         )}
       </div>
+      </header>
     </div>
   );
 }
