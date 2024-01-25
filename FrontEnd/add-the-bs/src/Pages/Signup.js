@@ -10,7 +10,7 @@ const Signup = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:3000/createUser', {
+      const response = await fetch('http://localhost:3001/createUser', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ const Signup = () => {
         console.log('Signup failed:', data.Message);
       }
 
-    const loginResponse = await fetch('http://localhost:3000/login', {
+    const loginResponse = await fetch('http://localhost:3001/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
