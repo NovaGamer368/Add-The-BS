@@ -258,6 +258,17 @@ app.get("/MovieDB/Movie/Similar/:movieId", async (req, res) => {
     res.status(500).json({ error: "DataBase Error" });
   }
 });
+app.get("/MovieDB/Poster/:poster", async (req, res) => {
+  try {
+    let poster = req.params.poster;
+    console.log("poster is: ", poster);
+    let movies = await movieDB.getMoviePoster(poster);
+    res.json(movies);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "DataBase Error" });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server is listening on port: ${port}`);

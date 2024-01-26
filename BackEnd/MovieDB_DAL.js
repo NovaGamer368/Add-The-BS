@@ -3,12 +3,12 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 class MovieDB_DAL {
-  baseURL = "https://api.themoviedb.org/3/";
+  baseURL = "https://api.themoviedb.org/3";
   apiKey = process.env.MOVIE_DB_APIKEY;
 
   async authenticate() {
     try {
-      const url = `${this.baseURL}authentication`;
+      const url = `${this.baseURL}/authentication`;
       console.log(url);
       const response = await fetch(url, {
         method: "GET",
@@ -28,7 +28,7 @@ class MovieDB_DAL {
 
   async getMovies(pageNum) {
     try {
-      const url = `${this.baseURL}movie/now_playing?language=en-US&page=${pageNum}`;
+      const url = `${this.baseURL}/movie/now_playing?language=en-US&page=${pageNum}`;
       console.log(url);
       const response = await fetch(url, {
         method: "GET",
@@ -47,7 +47,7 @@ class MovieDB_DAL {
   }
   async getSimpleMovies(pageNum) {
     try {
-      const url = `${this.baseURL}movie/now_playing?language=en-US&page=${pageNum}`;
+      const url = `${this.baseURL}/movie/now_playing?language=en-US&page=${pageNum}`;
       console.log(url);
       const response = await fetch(url, {
         method: "GET",
@@ -79,7 +79,7 @@ class MovieDB_DAL {
   }
   async getMovieByGenre() {
     try {
-      const url = `${this.baseURL}genre/movie/list?language=en`;
+      const url = `${this.baseURL}/genre/movie/list?language=en`;
       console.log(url);
       const response = await fetch(url, {
         method: "GET",
@@ -98,7 +98,7 @@ class MovieDB_DAL {
   }
   async getActorById(id) {
     try {
-      const url = `${this.baseURL}person/${id}?language=en-US`;
+      const url = `${this.baseURL}/person/${id}?language=en-US`;
       console.log(url);
       const response = await fetch(url, {
         method: "GET",
@@ -116,7 +116,7 @@ class MovieDB_DAL {
     }
   }
   async getActorByName(name) {
-    const searchEndpoint = "search/person";
+    const searchEndpoint = "/search/person";
     const query = encodeURIComponent(name);
 
     const url = `${this.baseURL}${searchEndpoint}?query=${query}`;
@@ -144,7 +144,7 @@ class MovieDB_DAL {
   }
   async getTrendingMovies() {
     try {
-      const url = `${this.baseURL}trending/movie/day?language=en-US'`;
+      const url = `${this.baseURL}/trending/movie/day?language=en-US'`;
       console.log(url);
       const response = await fetch(url, {
         method: "GET",
@@ -162,7 +162,7 @@ class MovieDB_DAL {
     }
   }
   async getMovieByName(name) {
-    const searchEndpoint = "search/movie";
+    const searchEndpoint = "/search/movie";
     const query = encodeURIComponent(name);
 
     const url = `${this.baseURL}${searchEndpoint}?query=${query}`;
@@ -190,7 +190,7 @@ class MovieDB_DAL {
   }
   async getMovieRecommendations(movieId) {
     try {
-      const url = `${this.baseURL}movie/${movieId}/recommendations?language=en-US&page=1`;
+      const url = `${this.baseURL}/movie/${movieId}/recommendations?language=en-US&page=1`;
       console.log(url);
       const response = await fetch(url, {
         method: "GET",
@@ -209,7 +209,7 @@ class MovieDB_DAL {
   }
   async getSimilarMovie(movieId) {
     try {
-      const url = `${this.baseURL}movie/${movieId}/similar?language=en-US&page=1`;
+      const url = `${this.baseURL}/movie/${movieId}/similar?language=en-US&page=1`;
       console.log(url);
       const response = await fetch(url, {
         method: "GET",
@@ -220,6 +220,25 @@ class MovieDB_DAL {
       });
 
       const data = await response.json();
+      return data;
+    } catch (e) {
+      console.log("ERROR WITH API:", e.message);
+      throw e;
+    }
+  }
+  async getMoviePoster(poster) {
+    try {
+      const url = `https://image.tmdb.org/t/p/w500/${poster}`;
+      console.log(url);
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${this.apiKey}`,
+          accept: "application/json",
+        },
+      });
+
+      const data = await response;
       return data;
     } catch (e) {
       console.log("ERROR WITH API:", e.message);
