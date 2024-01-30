@@ -9,7 +9,7 @@ class MovieDB_DAL {
   async authenticate() {
     try {
       const url = `${this.baseURL}/authentication`;
-      console.log(url);
+      // console.log(url);
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -29,7 +29,7 @@ class MovieDB_DAL {
   async getMovies(pageNum) {
     try {
       const url = `${this.baseURL}/movie/now_playing?language=en-US&page=${pageNum}`;
-      console.log(url);
+      // console.log(url);
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -48,7 +48,7 @@ class MovieDB_DAL {
   async getSimpleMovies(pageNum) {
     try {
       const url = `${this.baseURL}/movie/now_playing?language=en-US&page=${pageNum}`;
-      console.log(url);
+      // console.log(url);
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -80,7 +80,7 @@ class MovieDB_DAL {
   async getMovieByGenre() {
     try {
       const url = `${this.baseURL}/genre/movie/list?language=en`;
-      console.log(url);
+      // console.log(url);
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -99,7 +99,7 @@ class MovieDB_DAL {
   async getActorById(id) {
     try {
       const url = `${this.baseURL}/person/${id}?language=en-US`;
-      console.log(url);
+      // console.log(url);
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -120,7 +120,7 @@ class MovieDB_DAL {
     const query = encodeURIComponent(name);
 
     const url = `${this.baseURL}${searchEndpoint}?query=${query}`;
-    console.log(url);
+    // console.log(url);
 
     try {
       const response = await fetch(url, {
@@ -145,7 +145,7 @@ class MovieDB_DAL {
   async getTrendingMovies() {
     try {
       const url = `${this.baseURL}/trending/movie/day?language=en-US'`;
-      console.log(url);
+      // console.log(url);
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -166,7 +166,7 @@ class MovieDB_DAL {
     const query = encodeURIComponent(name);
 
     const url = `${this.baseURL}${searchEndpoint}?query=${query}`;
-    console.log(url);
+    // console.log(url);
 
     try {
       const response = await fetch(url, {
@@ -191,7 +191,7 @@ class MovieDB_DAL {
   async getMovieRecommendations(movieId) {
     try {
       const url = `${this.baseURL}/movie/${movieId}/recommendations?language=en-US&page=1`;
-      console.log(url);
+      // console.log(url);
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -210,7 +210,7 @@ class MovieDB_DAL {
   async getSimilarMovie(movieId) {
     try {
       const url = `${this.baseURL}/movie/${movieId}/similar?language=en-US&page=1`;
-      console.log(url);
+      // console.log(url);
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -229,17 +229,8 @@ class MovieDB_DAL {
   async getMoviePoster(poster) {
     try {
       const url = `https://image.tmdb.org/t/p/w500/${poster}`;
-      console.log(url);
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${this.apiKey}`,
-          accept: "application/json",
-        },
-      });
-
-      const data = await response;
-      return data;
+      console.log(poster);
+      return url;
     } catch (e) {
       console.log("ERROR WITH API:", e.message);
       throw e;

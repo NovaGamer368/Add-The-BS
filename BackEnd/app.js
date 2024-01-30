@@ -208,7 +208,7 @@ app.get("/MovieDB/Actor/:id", async (req, res) => {
 app.get("/MovieDB/ActorName/:name", async (req, res) => {
   try {
     let name = req.params.name;
-    console.log("name is: ", name);
+    // console.log("name is: ", name);
     let movies = await movieDB.getActorByName(name);
     res.json(movies);
   } catch (error) {
@@ -228,7 +228,7 @@ app.get("/MovieDB/trending", async (req, res) => {
 app.get("/MovieDB/MovieName/:name", async (req, res) => {
   try {
     let name = req.params.name;
-    console.log("name is: ", name);
+    // console.log("name is: ", name);
     let movies = await movieDB.getMovieByName(name);
     res.json(movies);
   } catch (error) {
@@ -239,7 +239,7 @@ app.get("/MovieDB/MovieName/:name", async (req, res) => {
 app.get("/MovieDB/Movie/Recommend/:movieId", async (req, res) => {
   try {
     let movieId = req.params.movieId;
-    console.log("movieId is: ", movieId);
+    // console.log("movieId is: ", movieId);
     let movies = await movieDB.getMovieRecommendations(movieId);
     res.json(movies);
   } catch (error) {
@@ -250,7 +250,7 @@ app.get("/MovieDB/Movie/Recommend/:movieId", async (req, res) => {
 app.get("/MovieDB/Movie/Similar/:movieId", async (req, res) => {
   try {
     let movieId = req.params.movieId;
-    console.log("movieId is: ", movieId);
+    // console.log("movieId is: ", movieId);
     let movies = await movieDB.getSimilarMovie(movieId);
     res.json(movies);
   } catch (error) {
