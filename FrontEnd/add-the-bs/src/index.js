@@ -6,6 +6,8 @@ import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Navbar from "./Layout/Navbar";
 import Footer from "./Layout/Footer";
+import Admin from "./Pages/Admin";
+import Details from "./Pages/Details";
 import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import Profile from "./Pages/Profile";
@@ -53,6 +55,16 @@ const router = createBrowserRouter([
       <>
         <Navbar />
         <Details />
+        <Footer />
+      </>
+    ),
+  },
+  {
+    path: "/admin",
+    element: (
+      <>
+        <Navbar />
+        <Admin />
         <Footer />
       </>
     ),
