@@ -188,6 +188,7 @@ class MovieDB_DAL {
       throw error;
     }
   }
+  //https://developer.themoviedb.org/reference/movie-details
   async getMovieById(id){
     const url = `${this.baseURL}/movie/${id}?language=en-US`;
     try {
