@@ -1,42 +1,68 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import {createBrowserRouter, RouterProvider} from 'react-router-dom';
-import Navbar from './Layout/Navbar';
-import Footer from './Layout/Footer';
-import Login from './Pages/Login';
-import Signup from './Pages/Signup';
-import Profile from './Pages/Profile';
-import Details from './Pages/Details';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Navbar from "./Layout/Navbar";
+import Footer from "./Layout/Footer";
+import Login from "./Pages/Login";
+import Signup from "./Pages/Signup";
+import Profile from "./Pages/Profile";
 
 const router = createBrowserRouter([
-  { path: "/home",
-    element:<><Navbar/><App/><Footer/></>
+  {
+    path: "/home",
+    element: (
+      <>
+        <Navbar />
+        <App />
+        <Footer />
+      </>
+    ),
   },
   {
     path: "/login",
-    element:<><Login/></>
+    element: (
+      <>
+        <Login />
+      </>
+    ),
   },
   {
     path: "/",
-    element:<><Signup/></>
+    element: (
+      <>
+        <Signup />
+      </>
+    ),
   },
   {
     path: "/profile",
-    element:<><Navbar/><Profile/><Footer/></>
+    element: (
+      <>
+        <Navbar />
+        <Profile />
+        <Footer />
+      </>
+    ),
   },
   {
-    path:"/MovieInfo/:title",
-    element:<><Navbar/><Details/><Footer/></>
-  }
-])
+    path: "/MovieInfo/:title",
+    element: (
+      <>
+        <Navbar />
+        <Details />
+        <Footer />
+      </>
+    ),
+  },
+]);
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <RouterProvider router = {router} />
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
 
