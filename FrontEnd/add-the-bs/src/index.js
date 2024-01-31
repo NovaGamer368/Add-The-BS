@@ -9,6 +9,7 @@ import Footer from './Layout/Footer';
 import Login from './Pages/Login';
 import Signup from './Pages/Signup';
 import Profile from './Pages/Profile';
+import Details from './Pages/Details';
 
 const router = createBrowserRouter([
   { path: "/home",
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: "/profile",
     element:<><Navbar/><Profile/><Footer/></>
+  },
+  {
+    path:"/MovieInfo/:title",
+    element:<><Navbar/><Details/><Footer/></>
   }
 ])
 

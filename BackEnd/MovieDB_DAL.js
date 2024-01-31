@@ -188,6 +188,28 @@ class MovieDB_DAL {
       throw error;
     }
   }
+  async getMovieById(id){
+    const url = `${this.baseURL}/movie/${id}?language=en-US`;
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.apiKey}`,
+          accept: 'application/json',
+        },
+      });
+      const data = await response.json();
+
+      if(response.ok) {
+        return data.results;
+      } else {
+        throw new Error(`Failed to fetch people. Status: ${response.status} `);
+      }
+    } catch (error) {
+      console.error("Error in API request:", error.message);
+      throw error;
+    }
+  }
   async getMovieRecommendations(movieId) {
     try {
       const url = `${this.baseURL}/movie/${movieId}/recommendations?language=en-US&page=1`;

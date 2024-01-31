@@ -236,6 +236,17 @@ app.get("/MovieDB/MovieName/:name", async (req, res) => {
     res.status(500).json({ error: "DataBase Error" });
   }
 });
+app.get("/MovieDB/MovieId/:id", async (req, res) => {
+  try {
+    let id = req.params.id;
+    // console.log("name is: ", name);
+    let movies = await movieDB.getMovieById(id);
+    res.json(movies);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "DataBase Error" });
+  }
+});
 app.get("/MovieDB/Movie/Recommend/:movieId", async (req, res) => {
   try {
     let movieId = req.params.movieId;

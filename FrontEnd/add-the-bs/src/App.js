@@ -11,6 +11,7 @@ function App() {
       .then((response) => response.json())
       .then((data) => {
         setMovieData(data);
+        console.log(data);
       })
       .catch((error) => {
         console.error(error);
