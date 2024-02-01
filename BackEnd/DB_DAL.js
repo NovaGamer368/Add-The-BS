@@ -1,3 +1,4 @@
+const { ApolloServer, gql } = require('apollo-server');
 const { mongoose, Schema } = require("mongoose");
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
@@ -12,7 +13,7 @@ connection.once("open", () => {
     console.log("Mongoose Connected")
 });
 
-const user = new Schema(
+const userSchema = new Schema(
     {
       Key: String,
       Gmail: String,
@@ -21,80 +22,89 @@ const user = new Schema(
       Password: String,
     },
     { collection: collectionOne }
-  );
-  
-  const UserModel = mongoose.model("User", user);
+);
 
-exports.DAL = {
+const UserModel = mongoose.model("User", userSchema);
 
-    getUserByEmail: async (email) => {
-        return await UserModel.findOne({ Gmail: email }).exec();
-      },
-      updateUserProfile: async (userId, updatedUserData) => {
-        try {
-          const updatedUser = await UserModel.findByIdAndUpdate(
-            userId,
-            { $set: updatedUserData },
-            { new: true }
-          ).exec();
-          return updatedUser;
-        } catch (error) {
-          console.error(error);
-          throw error;
-        }
-      },
-      getUserById: async (userId) => {
-        try {
-          const user = await UserModel.findById(userId).exec();
-          return user;
-        } catch (error) {
-          console.error(error);
-          throw error;
-        }
-      },
-      getAllUsers: async () => {
-        try {
-          const users = await UserModel.find(); 
-          return users;
-        } catch (error) {
-          throw error;
-        }
-      },
-      generateKey: () => {
-        return uuidv4();
-      },
+const typeDefs = gql`
+  type User {
+    id: ID!
+    Key: String!
+    Gmail: String!
+    Username: String!
+    Img: String!
+    Password: String!
+  }
 
-      createUser: async (email, key, username, password) => {
-        let newUser = {
-          Key: key,
-          Gmail: email,
-          Username: username,
-          Img: "/images/profile-pictures/default-user.png", 
-          Password: await bcrypt.hash(password, 10),
+  type Query {
+    getUserByEmail(email: String!): User
+    getUserById(userId: ID!): User
+    getAllUsers: [User]
+  }
 
-        };
-      
-        console.log("New User Object:", newUser);
-      
-        try {
-          const result = await UserModel.create(newUser);
-          return result; 
-        } catch (error) {
-          console.log("Error creating user:", error);
-          throw error;
-        }
-      },
-      isKeyValid: (key) => {
-        console.log("isKeyValid" + key);
-        let result = key === "ndkl-dkfd-ekrg-ewld";
-        console.log("isKeyValid result");
-        return result;
-      },
-       comparePasswords: async (inputPassword, hashedPassword) => {
-        return await bcrypt.compare(inputPassword, hashedPassword);
-      },
-      filename: function (req, file, cb) {
-        const sanitizedFilename = sanitize(file.originalname);
-        cb(null, sanitizedFilename);
-      },
-}
+  type Mutation {
+    createUser(email: String!, key: String!, username: String!, password: String!): User
+    updateUserProfile(userId: ID!, updatedUserData: UserInput!): User
+  }
+
+  input UserInput {
+    Key: String
+    Gmail: String
+    Username: String
+    Img: String
+    Password: String
+  }
+`;
+
+const resolvers = {
+  Query: {
+    getUserByEmail: async (_, { email }) => await UserModel.findOne({ Gmail: email }),
+    getUserById: async (_, { userId }) => await UserModel.findById(userId),
+    getAllUsers: async () => await UserModel.find(),
+  },
+  Mutation: {
+    createUser: async (_, { email, key, username, password }) => {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const newUser = await UserModel.create({
+        Key: key,
+        Gmail: email,
+        Username: username,
+        Img: "/images/profile-pictures/default-user.png", 
+        Password: hashedPassword,
+      });
+      return newUser;
+    },
+    updateUserProfile: async (_, { userId, updatedUserData }) => {
+      const updatedUser = await UserModel.findByIdAndUpdate(
+        userId,
+        { $set: updatedUserData },
+        { new: true }
+      );
+      return updatedUser;
+    },
+  },
+  User: {
+    isKeyValid: (parent, args, context, info) => {
+      console.log("isKeyValid" + parent.Key);
+      let result = parent.Key === "ndkl-dkfd-ekrg-ewld";
+      console.log("isKeyValid result");
+      return result;
+    },
+    comparePasswords: async (parent, { inputPassword }) => {
+      return await bcrypt.compare(inputPassword, parent.Password);
+    },
+    filename: (parent, { file }, context, info) => {
+      const sanitizedFilename = sanitize(file.originalname);
+      return sanitizedFilename;
+    },
+    generateKey: () => {
+      return uuidv4();
+    },
+  },
+};
+
+const server = new ApolloServer({ typeDefs, resolvers });
+
+server.listen().then(({ url }) => {
+  console.log(`Server ready at ${url}`);
+});

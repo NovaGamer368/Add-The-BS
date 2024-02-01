@@ -2,9 +2,9 @@ const MovieDB_DAL = require("./MovieDB_DAL");
 const express = require("express");
 const session = require("express-session");
 const cors = require("cors");
-const { v4: uuidv4 } = require("uuid");
 const multer = require("multer");
 const sanitize = require("sanitize-filename");
+const { ApolloServer } = require('apollo-server-express');
 
 const dal = require("./DB_DAL").DAL;
 const movieDB = new MovieDB_DAL();
@@ -30,6 +30,11 @@ app.use(
     saveUninitialized: true,
   })
 );
+
+const { typeDefs, resolvers } = dal;
+
+const server = new ApolloServer({ typeDefs, resolvers });
+server.applyMiddleware({ app });
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
