@@ -1,48 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useQuery, gql } from '@apollo/client';
 
+const GET_USER_BY_ID = gql`
+  query GetUserById($userId: ID!) {
+    getUserById(userId: $userId) {
+      id
+      UserName
+      Name
+      Location
+      Bio
+      Img
+      Key
+    }
+  }
+`;
 
 function Profile() {
-  const [user, setUser] = useState(null);
-  const [userImg, setUserImg] = useState("");
   const userId = sessionStorage.getItem('userId');
+  const { loading, error, data } = useQuery(GET_USER_BY_ID, {
+    variables: { userId },
+  });
+
+  if (loading) return <p>Loading user data...</p>;
+  if (error) return <p>Error fetching user data: {error.message}</p>;
+
+  const user = data.getUserById;
   const isAdmin = user && user.Key === 'a84640d6-1c42-41aa-a53f-783edd2b4e64'; 
-  const loggedInUserId = sessionStorage.getItem('userId');
+  const userImg = user && user.Img ? `http://localhost:3001${user.Img}` : '';
 
-  useEffect(() => {
-    console.log('Fetching user data...');
-    fetch(`http://localhost:3001/user/${userId}`, {
-      method: 'GET',
-      credentials: 'include',
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log('User data:', data);
-        setUser(data);
-      })
-      .catch(error => {
-        console.error('Error fetching user data:', error);
-      });
-  }, [userId]);
-
-  useEffect(() => {
-    if (user && user.Img) {
-      setUserImg(`http://localhost:3001${user.Img}`);
-    }
-  }, [user]);
-
-  
   return (
-    <div className=''>
+    <div>
       <header className="App-header">
-      <div>
         {user ? (
           <div>
             <div>
                 <img src={userImg} alt="Profile" />
                 <h3>{user.UserName}</h3>
                 <p>Pronouns: {user.Name}</p>
-                <p>Location: {isAdmin ? user.Location : isAdmin}</p>
+                <p>Location: {isAdmin ? user.Location : 'Admin Only'}</p>
                 <p>Bio: {user.Bio}</p>
                 <Link to='/updateUser'>
                     <button>Edit Profile</button>
@@ -60,7 +56,6 @@ function Profile() {
         ) : (
           <p>Loading user data...</p>
         )}
-      </div>
       </header>
     </div>
   );
