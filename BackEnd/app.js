@@ -239,7 +239,7 @@ app.get("/MovieDB/MovieName/:name", async (req, res) => {
 app.get("/MovieDB/MovieId/:id", async (req, res) => {
   try {
     let id = req.params.id;
-    // console.log("name is: ", name);
+    // console.log("id is: ", id);
     let movies = await movieDB.getMovieById(id);
     res.json(movies);
   } catch (error) {

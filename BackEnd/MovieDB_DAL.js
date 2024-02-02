@@ -189,20 +189,21 @@ class MovieDB_DAL {
     }
   }
   //https://developer.themoviedb.org/reference/movie-details
-  async getMovieById(id){
+  async getMovieById(id) {
     const url = `${this.baseURL}/movie/${id}?language=en-US`;
+    console.log(url);
     try {
       const response = await fetch(url, {
-        method: 'GET',
+        method: "GET",
         headers: {
           Authorization: `Bearer ${this.apiKey}`,
-          accept: 'application/json',
+          accept: "application/json",
         },
       });
       const data = await response.json();
 
-      if(response.ok) {
-        return data.results;
+      if (response.ok) {
+        return data;
       } else {
         throw new Error(`Failed to fetch people. Status: ${response.status} `);
       }
