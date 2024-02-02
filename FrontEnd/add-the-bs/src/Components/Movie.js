@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 
 const Movie = ({ movie }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -70,7 +69,7 @@ const Movie = ({ movie }) => {
             clipRule="evenodd"
           ></path>
         </svg>
-       </a>
+      </a>
     </div>
   );
 };

@@ -50,7 +50,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/MovieInfo/:title",
+    path: "/MovieInfo/:id",
     element: (
       <>
         <Navbar />
