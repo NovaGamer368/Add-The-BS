@@ -10,7 +10,7 @@ const Movie = ({ movie }) => {
       setPosterUrl(data);
       console.log(posterUrl);
     });
-  }, []);
+  }, [movie.poster_path, posterUrl]);
   const fetchPoster = async (posterUrl) => {
     try {
       const response = await fetch(
