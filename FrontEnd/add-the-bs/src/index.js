@@ -11,6 +11,7 @@ import Details from "./Pages/Details";
 import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import Profile from "./Pages/Profile";
+import MovieSearch from "./Pages/MovieSearch";
 
 const router = createBrowserRouter([
   {
@@ -69,6 +70,10 @@ const router = createBrowserRouter([
       </>
     ),
   },
+  {
+    path: "/movie",
+    element: (<><Navbar/><MovieSearch/><Footer/></>)
+  }
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

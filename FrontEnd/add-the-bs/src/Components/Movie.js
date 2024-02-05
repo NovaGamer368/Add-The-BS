@@ -28,23 +28,26 @@ const Movie = ({ movie }) => {
     return <p>LOADING...</p>;
   }
   return (
-    <div className="p-6 w-96 h-fit border rounded-lg bg-gray-800 border-gray-700">
+    <div className="p-4 w-96 h-fit border rounded-lg bg-gray-800 border-gray-700">
       <div>
-        <h1 className="mb-10 p-2 h-20 flex justify-center items-center text-wrap font-bold text-white">
-          {movie.title}
-        </h1>
-        <hr className="mx-auto w-48 h-1 bg-gray-100 rounded border-0 md:my-4 bg-gray-700" />
-        <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+        <p className="mb-14">
           <img src={posterUrl} alt="poster" />
         </p>
       </div>
+      <div className="mb-14 flex justify-center items-center">
+        <h1 className="h-12 flex justify-center items-center text-wrap font-bold text-white">
+          {movie.title}
+        </h1>
+      </div>
+      <hr className="mx-auto w-48 h-1 bg-gray-100 rounded border-0 md:my-4" />
       <div>
-        <h2 className="text-white text-2xl flex">Release Date: </h2>
-        <p className="text-2xl">{movie.release_date}</p>
+        <h4 className="text-white text-2xl flex">Release Date: </h4>
+        <p className="text-3xl flex justify-center">{movie.release_date}</p>
       </div>
       <div>
+        <h4 className="text-white text-2xl flex">Genre: </h4>
         <ul>
-          <li key={movie.id}>
+          <li key={movie.id} className="flex justify-center">
             {movie.genre_ids
               .filter((genre_ids) => genre_ids !== "")
               .join(" , ")}
