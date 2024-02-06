@@ -1,7 +1,10 @@
 const { ApolloServer, gql } = require('apollo-server');
+const { GraphQLUpload } = require('graphql-upload');
 const { mongoose, Schema } = require("mongoose");
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
+const fs = require('fs');
+const { createWriteStream } = require('fs');
 
 const connectionString = "mongodb+srv://johnstonharlea:I62V4Lsg3tjSkxzC@cluster0.ryaxisq.mongodb.net/User";
 const collectionOne = "users"
@@ -27,6 +30,8 @@ const userSchema = new Schema(
 const UserModel = mongoose.model("User", userSchema);
 
 const typeDefs = gql`
+  scalar Upload
+
   type User {
     id: ID!
     Key: String!
@@ -34,6 +39,9 @@ const typeDefs = gql`
     Username: String!
     Img: String!
     Password: String!
+    isKeyValid: Boolean
+    comparePasswords(inputPassword: String!): Boolean
+    filename: String
   }
 
   type Query {
@@ -45,6 +53,7 @@ const typeDefs = gql`
   type Mutation {
     createUser(email: String!, key: String!, username: String!, password: String!): User
     updateUserProfile(userId: ID!, updatedUserData: UserInput!): User
+    uploadProfilePicture(userId: ID!, file: Upload!): String
   }
 
   input UserInput {
@@ -82,6 +91,17 @@ const resolvers = {
       );
       return updatedUser;
     },
+    uploadProfilePicture: async (_, { userId, file }) => {
+      const { createReadStream, filename } = await file;
+      const writableStream = createWriteStream(`./public/images/profile-pictures/${filename}`);
+      await new Promise((resolve, reject) => {
+        createReadStream()
+          .pipe(writableStream)
+          .on('finish', resolve)
+          .on('error', reject);
+      });
+      return filename;
+    },
   },
   User: {
     isKeyValid: (parent, args, context, info) => {
@@ -93,9 +113,9 @@ const resolvers = {
     comparePasswords: async (parent, { inputPassword }) => {
       return await bcrypt.compare(inputPassword, parent.Password);
     },
-    filename: (parent, { file }, context, info) => {
-      const sanitizedFilename = sanitize(file.originalname);
-      return sanitizedFilename;
+    filename: (parent, args, context, info) => {
+      // Return the filename from the Img field
+      return parent.Img;
     },
     generateKey: () => {
       return uuidv4();
