@@ -4,7 +4,7 @@ const session = require("express-session");
 const cors = require("cors");
 const multer = require("multer");
 const sanitize = require("sanitize-filename");
-const { ApolloServer } = require('apollo-server-express');
+const { ApolloServer } = require("apollo-server-express");
 
 const dal = require("./DB_DAL").DAL;
 const movieDB = new MovieDB_DAL();

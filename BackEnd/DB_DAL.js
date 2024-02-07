@@ -1,30 +1,34 @@
-const { ApolloServer, gql } = require('apollo-server');
-const { GraphQLUpload } = require('graphql-upload');
+const { ApolloServer, gql } = require("apollo-server");
 const { mongoose, Schema } = require("mongoose");
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
-const fs = require('fs');
-const { createWriteStream } = require('fs');
+const fs = require("fs");
+const { createWriteStream } = require("fs");
+const Upload = require("graphql-upload/Upload.mjs");
 
-const connectionString = "mongodb+srv://johnstonharlea:I62V4Lsg3tjSkxzC@cluster0.ryaxisq.mongodb.net/User";
-const collectionOne = "users"
+const connectionString =
+  "mongodb+srv://johnstonharlea:I62V4Lsg3tjSkxzC@cluster0.ryaxisq.mongodb.net/User";
+const collectionOne = "users";
 
-mongoose.connect(connectionString, {useUnifiedTopology: true, useNewUrlParser: true});
+mongoose.connect(connectionString, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+});
 
 const connection = mongoose.connection;
 connection.once("open", () => {
-    console.log("Mongoose Connected")
+  console.log("Mongoose Connected");
 });
 
 const userSchema = new Schema(
-    {
-      Key: String,
-      Gmail: String,
-      Username: String,
-      Img:String,
-      Password: String,
-    },
-    { collection: collectionOne }
+  {
+    Key: String,
+    Gmail: String,
+    Username: String,
+    Img: String,
+    Password: String,
+  },
+  { collection: collectionOne }
 );
 
 const UserModel = mongoose.model("User", userSchema);
@@ -51,7 +55,12 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    createUser(email: String!, key: String!, username: String!, password: String!): User
+    createUser(
+      email: String!
+      key: String!
+      username: String!
+      password: String!
+    ): User
     updateUserProfile(userId: ID!, updatedUserData: UserInput!): User
     uploadProfilePicture(userId: ID!, file: Upload!): String
   }
@@ -67,7 +76,8 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    getUserByEmail: async (_, { email }) => await UserModel.findOne({ Gmail: email }),
+    getUserByEmail: async (_, { email }) =>
+      await UserModel.findOne({ Gmail: email }),
     getUserById: async (_, { userId }) => await UserModel.findById(userId),
     getAllUsers: async () => await UserModel.find(),
   },
@@ -78,7 +88,7 @@ const resolvers = {
         Key: key,
         Gmail: email,
         Username: username,
-        Img: "/images/profile-pictures/default-user.png", 
+        Img: "/images/profile-pictures/default-user.png",
         Password: hashedPassword,
       });
       return newUser;
@@ -93,12 +103,14 @@ const resolvers = {
     },
     uploadProfilePicture: async (_, { userId, file }) => {
       const { createReadStream, filename } = await file;
-      const writableStream = createWriteStream(`./public/images/profile-pictures/${filename}`);
+      const writableStream = createWriteStream(
+        `./public/images/profile-pictures/${filename}`
+      );
       await new Promise((resolve, reject) => {
         createReadStream()
           .pipe(writableStream)
-          .on('finish', resolve)
-          .on('error', reject);
+          .on("finish", resolve)
+          .on("error", reject);
       });
       return filename;
     },
