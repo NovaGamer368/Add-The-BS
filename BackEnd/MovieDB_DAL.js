@@ -77,7 +77,7 @@ class MovieDB_DAL {
       throw e;
     }
   }
-  async getMovieByGenre() {
+  async getMovieGenre() {
     try {
       const url = `${this.baseURL}/genre/movie/list?language=en`;
       // console.log(url);
@@ -90,6 +90,33 @@ class MovieDB_DAL {
       });
 
       const data = await response.json();
+      return data;
+    } catch (e) {
+      console.log("ERROR WITH API:", e.message);
+      throw e;
+    }
+  }
+  async getMoviesByGenre(genre) {
+    try {
+      const genreList = await this.getMovieGenre();
+      var genreId = 28;
+      genreList.genres.forEach((genreObject) => {
+        if (genreObject.name === genre) {
+          genreId = genreObject.id;
+        }
+      });
+      const url = `${this.baseURL}/discover/movie?with_genres=${genreId}`;
+      // console.log(url);
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${this.apiKey}`,
+          accept: "application/json",
+        },
+      });
+
+      const data = await response.json();
+      console.log(data);
       return data;
     } catch (e) {
       console.log("ERROR WITH API:", e.message);
