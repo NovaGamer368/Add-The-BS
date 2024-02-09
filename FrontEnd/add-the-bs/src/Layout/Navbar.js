@@ -62,7 +62,7 @@ const Navbar = () => {
                     href="/genre"
                     className="text-gray-900 dark:text-white hover:underline"
                   >
-                    Genre Search
+                    Genre
                   </a>
                 </li>
                 <li>

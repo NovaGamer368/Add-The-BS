@@ -12,6 +12,8 @@ import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import Profile from "./Pages/Profile";
 import MovieSearch from "./Pages/MovieSearch";
+import ActorSearch from "./Pages/ActorSearch";
+import GenreDisplay from "./Pages/GenreDisplay";
 
 const router = createBrowserRouter([
   {
@@ -73,6 +75,14 @@ const router = createBrowserRouter([
   {
     path: "/movie",
     element: (<><Navbar/><MovieSearch/><Footer/></>)
+  },
+  {
+    path: "/actors",
+    element: (<><Navbar/><ActorSearch/><Footer/></>)
+  },
+  {
+    path: "/genre",
+    element: (<><Navbar/><GenreDisplay/><Footer/></>)
   }
 ]);
 

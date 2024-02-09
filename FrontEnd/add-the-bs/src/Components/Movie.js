@@ -3,27 +3,58 @@ import React, { useEffect, useState } from "react";
 const Movie = ({ movie }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [posterUrl, setPosterUrl] = useState("");
+  const [genreData, setGenreData] = useState({});
 
   useEffect(() => {
     fetchPoster(movie.poster_path).then((data) => {
       setIsLoading(false);
       setPosterUrl(data);
-      console.log(posterUrl);
+      //console.log(posterUrl);
     });
   }, [movie.poster_path, posterUrl]);
+
+  useEffect(() => {
+    fetch(`http://localhost:3001/MovieDB/getGenreList`)
+      .then((response) => response.json())
+      .then((data) => {
+        const genres = {};
+        data.genres.forEach((genre) => {
+          genres[genre.id] = genre.name;
+        });
+        setGenreData(genres);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
   const fetchPoster = async (posterUrl) => {
     try {
       const response = await fetch(
         `http://localhost:3001/MovieDB/Poster${posterUrl}`
       );
       const data = await response.json();
-      console.log("image url is: ", data);
+      //console.log("movie image url is: ", data);
       return data;
-    } catch (error) {
+    }
+    catch (error) {
       console.error(error);
       throw error;
     }
   };
+
+  const getGenreName = (id) => {
+    return genreData[id] || "Unknown";
+  }
+
+  function formatDate(dateString){
+    const date = new Date(dateString);
+    const month = date.getMonth() +1;
+    const day = date.getDate();
+    const year = date.getFullYear();
+    return `${month}-${day}-${year}`
+  };
+
   if (isLoading) {
     return <p>LOADING...</p>;
   }
@@ -42,16 +73,16 @@ const Movie = ({ movie }) => {
       <hr className="mx-auto w-48 h-1 bg-gray-100 rounded border-0 md:my-4" />
       <div>
         <h4 className="text-white text-2xl flex">Release Date: </h4>
-        <p className="text-3xl flex justify-center">{movie.release_date}</p>
+        <p className="text-3xl flex justify-center">{formatDate(movie.release_date)}</p>
       </div>
       <div>
         <h4 className="text-white text-2xl flex">Genre: </h4>
         <ul>
-          <li key={movie.id} className="flex justify-center">
-            {movie.genre_ids
-              .filter((genre_ids) => genre_ids !== "")
-              .join(" , ")}
-          </li>
+          {movie.genre_ids.map((id) => (
+            <li key={id} className="flex justify-center">
+            {getGenreName(id)}
+            </li>
+          ))}
         </ul>
       </div>
       <a
