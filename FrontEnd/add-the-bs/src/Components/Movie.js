@@ -55,9 +55,7 @@ const Movie = ({ movie }) => {
     return `${month}-${day}-${year}`
   };
 
-  if (isLoading) {
-    return <p>LOADING...</p>;
-  }
+  
   return (
     <div className="p-4 w-96 h-fit border rounded-lg bg-gray-800 border-gray-700">
       <div>

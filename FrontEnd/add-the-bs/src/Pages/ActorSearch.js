@@ -41,7 +41,7 @@ const MovieSearch = () => {
                     </form>
                 </div>
                 <div className="p-20">
-                    <h2 className="font-bold flex">Now Playing Movies</h2>
+                    <h2 className="font-bold flex">{movieSearch}</h2>
                     <hr className="w-80 h-2 rounded border-0 bg-gray-700" />
                     <div className="overflow-hidden overflow-x-scroll scroll whitespace-nowrap scroll-smooth">
                         <ul className="container flex">

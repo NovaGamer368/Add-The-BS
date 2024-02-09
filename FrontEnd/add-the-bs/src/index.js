@@ -14,6 +14,7 @@ import Profile from "./Pages/Profile";
 import MovieSearch from "./Pages/MovieSearch";
 import ActorSearch from "./Pages/ActorSearch";
 import GenreDisplay from "./Pages/GenreDisplay";
+import GenreList from "./Pages/GenreList";
 
 const router = createBrowserRouter([
   {
@@ -58,6 +59,16 @@ const router = createBrowserRouter([
       <>
         <Navbar />
         <Details />
+        <Footer />
+      </>
+    ),
+  },
+  {
+    path: "/GenreList/:name",
+    element: (
+      <>
+        <Navbar />
+        <GenreList />
         <Footer />
       </>
     ),
