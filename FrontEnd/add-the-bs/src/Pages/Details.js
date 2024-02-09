@@ -1,5 +1,6 @@
 import { React, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { red } from "tailwindcss/colors";
 
 const Details = () => {
   const [movieData, setMovieData] = useState([]);
@@ -24,37 +25,57 @@ const Details = () => {
     return <h1 className="text-xl text-center">LOADING...</h1>;
   }
   if (Object.keys(movieData).length > 0) {
-    return (
-      <div>
-        <header className="App-header">
-          <div className="container text-center justify-content-center">
-            <div className="mb-3" style={{ width: "80" }}>
-              <div className="row g-0">
-                {/* <div className="col-md-4">
-                            <img src={movieData.img} className="img-fluid rounded-start" alt="productImg"/>
-                        </div> */}
-                <div className="d-flex col-md-6">
-                  {/* try to get the value outside of these */}
-                  {/* {movieData.genre_ids
-                    .map((genre_ids) => genre_ids !== "")
-                    .join(" | ")} */}
-                  <div className="d-flex col-md-12">
-                    <div className="card-body justify-content-center">
-                      <h2 className="card-title">{movieData.title}</h2>
-                      <p className="card-text">
-                        <small className="text-body-secondary"></small>
-                      </p>
-                      <p className="card-text">{movieData.overview}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </header>
-      </div>
-    );
-  }
-};
 
+
+  return (
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", backgroundColor: "#282c34", minHeight: "100vh", padding: "20px" }}>
+      <div style={{ flex: "0 0 auto", marginRight: "20px" }}>
+    <div className="col-md-4">
+      <img src={movieData.background_path} className="img-fluid rounded-start" alt="productImg"/>
+    </div> 
+        <div style={{ marginTop: "10px", color: "white" }}>
+          <p>Rating: {movieData.rating}</p>
+          {/* Add more rating details if needed */}
+        </div>
+      </div>
+      <div style={{ flex: "1 1 auto", color: "white" }}>
+        <h2 style={{ fontSize: "24px", marginBottom: "10px" }}>{movieData.title}</h2>
+        <p style={{ fontSize: "16px" }}>{movieData.overview}</p>
+        <br></br>
+        <p style={{ fontSize: "16px" }}>Actors: </p>
+        <p style={{ fontSize: "16px" }}>More Like This: </p>
+
+        Reviews: 
+
+
+        {/* Add more movie details if needed */}
+      
+
+  <br>
+  </br>
+  <li></li>
+
+      <label htmlFor="comment" className="block text-sm font-medium leading-6 text-white-900">
+        Add your comment
+      </label>
+      <div className="mt-2">
+        <textarea
+          rows={4}
+          name="comment"
+          id="comment"
+          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          defaultValue={''}
+          
+        />
+        <button style={{backgroundColor: "red", border: "rounded"}}>Leave review</button>
+      </div>
+</div>
+
+
+
+    </div>
+  ); 
+};
+}
+ 
 export default Details;
