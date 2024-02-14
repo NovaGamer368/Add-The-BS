@@ -17,13 +17,13 @@ const Admin = () => {
   }, [users]);
 
   const fetchUsers = async () => {
-    const response = await fetch("http://localhost:3001/users");
+    const response = await fetch("http://localhost:3306/users");
     const data = await response.json();
     setUsers(data);
   };
 
   //   const fetchReviews = async () => {
-  //     const response = await fetch("http://localhost:3001/reviews");
+  //     const response = await fetch("http://localhost:3306/reviews");
   //     const data = await response.json();
   //     setReviews(data);
   //   };

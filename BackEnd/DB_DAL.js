@@ -1,100 +1,128 @@
-const { mongoose, Schema } = require("mongoose");
+const mysql = require("mysql");
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
 
-const connectionString = "mongodb+srv://johnstonharlea:I62V4Lsg3tjSkxzC@cluster0.ryaxisq.mongodb.net/User";
-const collectionOne = "users"
+const connection = mysql.createConnection(
+  {
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "Add_The_BS",
+  }
+  //"Server=(local);Database=Add-The-BS;Trusted_Connection=True;TrustServerCertificate=True"
+  // {
+  //   host: "localhost",
+  //   user: "root",
+  //   password: "",
+  //   database: "Add-The-BS",
+  // }
+);
 
-mongoose.connect(connectionString, {useUnifiedTopology: true, useNewUrlParser: true});
+// const user = new Schema(
+//   {
+//     Key: String,
+//     Gmail: String,
+//     Username: String,
+//     Img: String,
+//     Password: String,
+//   },
+//   { collection: collectionOne }
+// );
 
-const connection = mongoose.connection;
-connection.once("open", () => {
-    console.log("Mongoose Connected")
+// Attempt to establish the connection
+connection.connect(function (err) {
+  if (err) {
+    console.error("Error connecting to database:", err);
+    return;
+  }
+  console.log("Connected to database successfully");
 });
 
-const user = new Schema(
-    {
-      Key: String,
-      Gmail: String,
-      Username: String,
-      Img:String,
-      Password: String,
-    },
-    { collection: collectionOne }
-  );
-  
-  const UserModel = mongoose.model("User", user);
+// Listen for any errors during the connection process
+connection.on("error", function (err) {
+  console.error("Database error:", err);
+});
 
 exports.DAL = {
-
-    getUserByEmail: async (email) => {
-        return await UserModel.findOne({ Gmail: email }).exec();
-      },
-      updateUserProfile: async (userId, updatedUserData) => {
-        try {
-          const updatedUser = await UserModel.findByIdAndUpdate(
-            userId,
-            { $set: updatedUserData },
-            { new: true }
-          ).exec();
-          return updatedUser;
-        } catch (error) {
-          console.error(error);
-          throw error;
+  getUserByEmail: async (email) => {
+    const query = "SELECT * FROM users WHERE Gmail = ?";
+    return new Promise((resolve, reject) => {
+      connection.query(query, [email], (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results[0]); // Assuming only one user per email
         }
-      },
-      getUserById: async (userId) => {
-        try {
-          const user = await UserModel.findById(userId).exec();
-          return user;
-        } catch (error) {
-          console.error(error);
-          throw error;
+      });
+    });
+  },
+  updateUserProfile: async (userId, updatedUserData) => {
+    const { Username, Img, Password } = updatedUserData;
+    const query =
+      "UPDATE users SET Username = ?, Img = ?, Password = ? WHERE id = ?";
+    const values = [Username, Img, Password, userId];
+    return new Promise((resolve, reject) => {
+      connection.query(query, values, (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results);
         }
-      },
-      getAllUsers: async () => {
-        try {
-          const users = await UserModel.find(); 
-          return users;
-        } catch (error) {
-          throw error;
+      });
+    });
+  },
+  getUserById: async (userId) => {
+    const query = "SELECT * FROM users WHERE id = ?";
+    return new Promise((resolve, reject) => {
+      connection.query(query, [userId], (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results[0]); // Assuming only one user per id
         }
-      },
-      generateKey: () => {
-        return uuidv4();
-      },
-
-      createUser: async (email, key, username, password) => {
-        let newUser = {
-          Key: key,
-          Gmail: email,
-          Username: username,
-          Img: "/images/profile-pictures/default-user.png", 
-          Password: await bcrypt.hash(password, 10),
-
-        };
-      
-        console.log("New User Object:", newUser);
-      
-        try {
-          const result = await UserModel.create(newUser);
-          return result; 
-        } catch (error) {
-          console.log("Error creating user:", error);
-          throw error;
+      });
+    });
+  },
+  getAllUsers: async () => {
+    const query = "SELECT * FROM users";
+    return new Promise((resolve, reject) => {
+      connection.query(query, (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results);
         }
-      },
-      isKeyValid: (key) => {
-        console.log("isKeyValid" + key);
-        let result = key === "ndkl-dkfd-ekrg-ewld";
-        console.log("isKeyValid result");
-        return result;
-      },
-       comparePasswords: async (inputPassword, hashedPassword) => {
-        return await bcrypt.compare(inputPassword, hashedPassword);
-      },
-      filename: function (req, file, cb) {
-        const sanitizedFilename = sanitize(file.originalname);
-        cb(null, sanitizedFilename);
-      },
-}
+      });
+    });
+  },
+  generateKey: () => {
+    return uuidv4();
+  },
+  createUser: async (email, key, username, password) => {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const query =
+      "INSERT INTO users (Key, Gmail, Username, Img, Password) VALUES (?, ?, ?, ?, ?)";
+    const values = [
+      key,
+      email,
+      username,
+      "/images/profile-pictures/default-user.png",
+      hashedPassword,
+    ];
+    return new Promise((resolve, reject) => {
+      connection.query(query, values, (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+  },
+  isKeyValid: (key) => {
+    return key === "ndkl-dkfd-ekrg-ewld";
+  },
+  comparePasswords: async (inputPassword, hashedPassword) => {
+    return await bcrypt.compare(inputPassword, hashedPassword);
+  },
+};

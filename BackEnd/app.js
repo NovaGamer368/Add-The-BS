@@ -9,7 +9,7 @@ const sanitize = require("sanitize-filename");
 const dal = require("./DB_DAL").DAL;
 const movieDB = new MovieDB_DAL();
 
-const port = 3001;
+const port = 3306;
 
 const app = express();
 

@@ -48,7 +48,7 @@ const Signup = () => {
     e.preventDefault();
     if (validateFormValues()) {
       try {
-        const response = await fetch("http://localhost:3001/createUser", {
+        const response = await fetch("http://localhost:3306/createUser", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -63,7 +63,7 @@ const Signup = () => {
 
         if (data.success && data.key) {
           sessionStorage.setItem("sessionKey", data.key);
-          const loginResponse = await fetch("http://localhost:3001/login", {
+          const loginResponse = await fetch("http://localhost:3306/login", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

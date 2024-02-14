@@ -7,7 +7,7 @@ import Movie from "./Components/Movie";
 function App() {
   const [movieData, setMovieData] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:3001/MovieDB/getMovies/1`)
+    fetch(`http://localhost:3306/MovieDB/getMovies/1`)
       .then((response) => response.json())
       .then((data) => {
         setMovieData(data);
@@ -20,7 +20,7 @@ function App() {
 
   const [movieData2, setMovieData2] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:3001/MovieDB/trending`)
+    fetch(`http://localhost:3306/MovieDB/trending`)
       .then((response) => response.json())
       .then((data) => {
         setMovieData2(data);
