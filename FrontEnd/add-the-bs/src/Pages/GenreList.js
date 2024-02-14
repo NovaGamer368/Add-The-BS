@@ -19,17 +19,17 @@ const GenreList = () => {
         .catch((error) => {
             console.error(error);
         });
-    }, []);
+    }, [params.name]);
 
     if (isLoading) {
         return <h1 className="text-xl text-center">LOADING...</h1>;
     }
-
+    
     return (
         <div className="App">
             <header className="App-header">
                 <div className="p-20">
-                    <h2 className="font-bold flex">{params.name} available</h2>
+                    <h2 className="font-bold flex">{params.name} movies available</h2>
                     <hr className="w-80 h-2 rounded border-0 bg-gray-700" />
                         <div className="overflow-hidden overflow-x-scroll scroll whitespace-nowrap scroll-smooth">
                             <ul className="container flex">

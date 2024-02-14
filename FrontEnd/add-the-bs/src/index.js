@@ -19,69 +19,31 @@ import GenreList from "./Pages/GenreList";
 const router = createBrowserRouter([
   {
     path: "/home",
-    element: (
-      <>
-        <Navbar />
-        <App />
-        <Footer />
-      </>
-    ),
+    element: (<><Navbar /><App /><Footer /></>)
   },
   {
     path: "/login",
-    element: (
-      <>
-        <Login />
-      </>
-    ),
+    element: (<><Login /></>)
   },
   {
     path: "/",
-    element: (
-      <>
-        <Signup />
-      </>
-    ),
+    element: (<><Signup /></>)
   },
   {
     path: "/profile",
-    element: (
-      <>
-        <Navbar />
-        <Profile />
-        <Footer />
-      </>
-    ),
+    element: (<><Navbar /><Profile /><Footer /></>)
   },
   {
     path: "/MovieInfo/:id",
-    element: (
-      <>
-        <Navbar />
-        <Details />
-        <Footer />
-      </>
-    ),
+    element: (<><Navbar /><Details /><Footer /></>)
   },
   {
     path: "/GenreList/:name",
-    element: (
-      <>
-        <Navbar />
-        <GenreList />
-        <Footer />
-      </>
-    ),
+    element: (<><Navbar /><GenreList /><Footer /></>)
   },
   {
     path: "/admin",
-    element: (
-      <>
-        <Navbar />
-        <Admin />
-        <Footer />
-      </>
-    ),
+    element: (<><Navbar /><Admin /><Footer /></>)
   },
   {
     path: "/movie",
@@ -94,6 +56,10 @@ const router = createBrowserRouter([
   {
     path: "/genre",
     element: (<><Navbar/><GenreDisplay/><Footer/></>)
+  },
+  {
+    path: "/*",
+    element: (<><Navbar/><App/><Footer/></>)
   }
 ]);
 
