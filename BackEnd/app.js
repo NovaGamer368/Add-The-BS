@@ -57,14 +57,14 @@ app.put("/user/:id", upload.single("Img"), async (req, res) => {
 //CREATE
 app.post("/createUser", async (req, res) => {
   const { email, username, password } = req.body;
-  console.log("Received Request Body:", req.body);
+  // console.log("Received Request Body:", req.body);
 
   try {
     const key = await dal.generateKey();
     // console.log(email, "  |  ", key, "  |  ", email, "  |  ", password);
     // await sql.query`INSERT INTO Users (id, Email, Username, Img, Password) VALUES ('${key}', '${email}', '${username}', '/images/profile-pictures/default-user.png', '${hashedPassword}')`;
     const result = await dal.createUser(email, key, email, password);
-    console.log("Create User Result:", result);
+    // console.log("Create User Result:", result);
 
     if (result) {
       res.json({ success: true, key: key });
@@ -82,27 +82,24 @@ app.post("/createUser", async (req, res) => {
 
 //ADMIN STUFF???
 app.post("/createKey", async (req, res) => {
-  const email = req.body.email;
-
-  try {
-    let existingUser = await dal.getUserByEmail(email);
-
-    if (existingUser) {
-      res.json({ Message: "User already exists", Key: existingUser.Key });
-    } else {
-      const key = dal.generateKey();
-      let createdUser = await dal.createUser(email, key);
-
-      if (createdUser) {
-        res.json({ Message: "User created successfully", Key: key });
-      } else {
-        res.json({ Message: "Failed to create user" });
-      }
-    }
-  } catch (error) {
-    console.error(error);
-    res.json({ Message: "An error occurred while registering user" });
-  }
+  // const email = req.body.email;
+  // try {
+  //   let existingUser = await dal.getUserByEmail(email);
+  //   if (existingUser) {
+  //     res.json({ Message: "User already exists", Key: existingUser.Key });
+  //   } else {
+  //     const key = dal.generateKey();
+  //     let createdUser = await dal.createUser(email, key);
+  //     if (createdUser) {
+  //       res.json({ Message: "User created successfully", Key: key });
+  //     } else {
+  //       res.json({ Message: "Failed to create user" });
+  //     }
+  //   }
+  // } catch (error) {
+  //   console.error(error);
+  //   res.json({ Message: "An error occurred while registering user" });
+  // }
 });
 
 // GETS ALL USERS
@@ -138,15 +135,14 @@ app.post("/login", async (req, res) => {
       return res.json({ success: false, Message: "User not found" });
     }
 
-    const isValidPassword = await dal.comparePasswords(password, user.Password);
+    console.log("The user ", user.password);
+    const isValidPassword = await dal.comparePasswords(password, user.password);
 
     if (!isValidPassword) {
       return res.json({ success: false, Message: "Invalid password" });
     }
 
-    const key = dal.generateKey();
-    req.session.userId = user._id;
-    res.json({ success: true, key: key, userId: user._id });
+    res.json({ success: true, key: user.id });
   } catch (error) {
     console.error("Error during login:", error);
     res
@@ -275,7 +271,7 @@ app.get("/MovieDB/Movie/Similar/:movieId", async (req, res) => {
 app.get("/MovieDB/Poster/:poster", async (req, res) => {
   try {
     let poster = req.params.poster;
-    console.log("poster is: ", poster);
+    // console.log("poster is: ", poster);
     let movies = await movieDB.getMoviePoster(poster);
     res.json(movies);
   } catch (error) {

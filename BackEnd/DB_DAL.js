@@ -34,16 +34,25 @@ const pool = new sql.ConnectionPool(config);
 
 exports.DAL = {
   getUserByEmail: async (email) => {
-    const query = "SELECT * FROM users WHERE Gmail = ?";
-    return new Promise((resolve, reject) => {
-      connection.query(query, [email], (error, results) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(results[0]); // Assuming only one user per email
-        }
-      });
-    });
+    try {
+      await pool.connect();
+
+      const query = ` Select * from Users where Email = '${email}'`;
+
+      const request = pool.request();
+      const result = await request.query(query);
+      console.log(result);
+      if (result.recordset.length > 0) {
+        return result.recordset[0];
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.error("Error fetching user by ID:", e);
+      throw e;
+    } finally {
+      pool.close();
+    }
   },
   updateUserProfile: async (userId, updatedUserData) => {
     const { Username, Img, Password } = updatedUserData;
@@ -61,16 +70,25 @@ exports.DAL = {
     });
   },
   getUserById: async (userId) => {
-    const query = "SELECT * FROM users WHERE id = ?";
-    return new Promise((resolve, reject) => {
-      connection.query(query, [userId], (error, results) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(results[0]); // Assuming only one user per id
-        }
-      });
-    });
+    try {
+      await pool.connect();
+
+      const query = ` Select * from Users where id = '${userId}'`;
+
+      const request = pool.request();
+      const result = await request.query(query);
+      console.log(result);
+      if (result.recordset.length > 0) {
+        return result.recordset[0];
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.error("Error fetching user by ID:", error);
+      throw error;
+    } finally {
+      pool.close();
+    }
   },
   getAllUsers: async () => {
     const query = "SELECT * FROM users";
