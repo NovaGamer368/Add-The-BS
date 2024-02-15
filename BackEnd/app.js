@@ -5,6 +5,7 @@ const cors = require("cors");
 const { v4: uuidv4 } = require("uuid");
 const multer = require("multer");
 const sanitize = require("sanitize-filename");
+const sql = require("mssql");
 
 const dal = require("./DB_DAL").DAL;
 const movieDB = new MovieDB_DAL();
@@ -16,21 +17,6 @@ const app = express();
 app.use(express.json());
 //app.use(express.urlencoded());
 
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-  })
-);
-
-app.use(
-  session({
-    secret: "this_is_a_very_secret_key",
-    resave: false,
-    saveUninitialized: true,
-  })
-);
-
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/images/profile-pictures");
@@ -40,6 +26,12 @@ const storage = multer.diskStorage({
     cb(null, sanitizedFilename);
   },
 });
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 
 const upload = multer({ storage: storage });
 
@@ -65,12 +57,13 @@ app.put("/user/:id", upload.single("Img"), async (req, res) => {
 //CREATE
 app.post("/createUser", async (req, res) => {
   const { email, username, password } = req.body;
-
   console.log("Received Request Body:", req.body);
 
   try {
-    const key = dal.generateKey();
-    const result = await dal.createUser(email, key, username, password);
+    const key = await dal.generateKey();
+    // console.log(email, "  |  ", key, "  |  ", email, "  |  ", password);
+    // await sql.query`INSERT INTO Users (id, Email, Username, Img, Password) VALUES ('${key}', '${email}', '${username}', '/images/profile-pictures/default-user.png', '${hashedPassword}')`;
+    const result = await dal.createUser(email, key, email, password);
     console.log("Create User Result:", result);
 
     if (result) {

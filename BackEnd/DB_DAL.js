@@ -1,47 +1,36 @@
-const mysql = require("mysql");
+const sql = require("mssql");
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
+const dotenv = require("dotenv");
 
-const connection = mysql.createConnection(
-  {
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "Add_The_BS",
-  }
-  //"Server=(local);Database=Add-The-BS;Trusted_Connection=True;TrustServerCertificate=True"
-  // {
-  //   host: "localhost",
-  //   user: "root",
-  //   password: "",
-  //   database: "Add-The-BS",
-  // }
-);
-
-// const user = new Schema(
-//   {
-//     Key: String,
-//     Gmail: String,
-//     Username: String,
-//     Img: String,
-//     Password: String,
-//   },
-//   { collection: collectionOne }
+// const connection = mysql.createConnection(
+//   "Server=localhost;Database=Add_The_BS;Integrated Security=True;"
 // );
+// // Attempt to establish the connection
+// connection.connect(function (err) {
+//   if (err) {
+//     console.error("Error connecting to database:", err);
+//     return;
+//   }
+//   console.log("Connected to database successfully");
+// });
 
-// Attempt to establish the connection
-connection.connect(function (err) {
-  if (err) {
-    console.error("Error connecting to database:", err);
-    return;
-  }
-  console.log("Connected to database successfully");
-});
+// // Listen for any errors during the connection process
+// connection.on("error", function (err) {
+//   console.error("Database error:", err);
+// });
 
-// Listen for any errors during the connection process
-connection.on("error", function (err) {
-  console.error("Database error:", err);
-});
+const config = {
+  server: "localhost",
+  database: "Add_The_BS",
+  user: "Add_The_BS",
+  password: process.env.SQL_PASSWORD,
+  options: {
+    encrypt: false, // Set to true if you're using Azure SQL Database
+    trustServerCertificate: true, // Set to true if you're using Azure SQL Database
+  },
+};
+const pool = new sql.ConnectionPool(config);
 
 exports.DAL = {
   getUserByEmail: async (email) => {
@@ -99,25 +88,25 @@ exports.DAL = {
     return uuidv4();
   },
   createUser: async (email, key, username, password) => {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const query =
-      "INSERT INTO users (Key, Gmail, Username, Img, Password) VALUES (?, ?, ?, ?, ?)";
-    const values = [
-      key,
-      email,
-      username,
-      "/images/profile-pictures/default-user.png",
-      hashedPassword,
-    ];
-    return new Promise((resolve, reject) => {
-      connection.query(query, values, (error, results) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(results);
-        }
-      });
-    });
+    try {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await pool.connect();
+      // console.log(pool);
+
+      const query = `INSERT INTO Users (id, Email, Username, Img, Password) VALUES ('${key}', '${email}', '${username}', '/images/profile-pictures/default-user.png', '${hashedPassword}')`;
+      // console.log("Testing query: ", query);
+
+      const request = pool.request();
+      // console.log("Request going out");
+      await request.query(query);
+      // console.log("query ran");
+
+      return true;
+    } catch (e) {
+      return false;
+    } finally {
+      pool.close();
+    }
   },
   isKeyValid: (key) => {
     return key === "ndkl-dkfd-ekrg-ewld";
