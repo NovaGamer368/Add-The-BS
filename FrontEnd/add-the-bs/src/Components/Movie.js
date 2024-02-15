@@ -30,6 +30,9 @@ const Movie = ({ movie }) => {
 
   const fetchPoster = async (posterUrl) => {
     try {
+      if(!posterUrl){
+        return "";
+      }
       const response = await fetch(
         `http://localhost:3001/MovieDB/Poster${posterUrl}`
       );

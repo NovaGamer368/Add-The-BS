@@ -44,9 +44,9 @@ const MovieSearch = () => {
                         <hr className="w-80 h-2 rounded border-0 bg-gray-700" />
                         <div className="overflow-hidden overflow-x-scroll scroll whitespace-nowrap scroll-smooth">
                             <ul className="container flex">
-                            {movieData?.map((movie) => (
-                                <li key={movie.id} className="p-9 cursor-pointer hover:scale-105 ease-in-out duration-300">
-                                    <Movie movie={movie} />
+                            {movieData.filter(movie => movie.poster_path !== null).map(movie => (
+                                <li key={movie.id} className='p-9 cursor-pointer hover:scale-105 ease-in-out duration-300'>
+                                    <Movie movie={movie}/>
                                 </li>
                             ))}
                             </ul>

@@ -44,11 +44,11 @@ const MovieSearch = () => {
                         <hr className="w-80 h-2 rounded border-0 bg-gray-700" />
                         <div className="overflow-hidden overflow-x-scroll scroll whitespace-nowrap scroll-smooth">
                             <ul className="container flex">
-                                {movieData?.map((actor) => (
-                                <li key={actor.id} className="p-9 cursor-pointer hover:scale-105 ease-in-out duration-300">
-                                    <Actor actor={actor} />
+                            {movieData.filter(actor => actor.profile_path !== null).map(actor => (
+                                <li key={actor.id} className='p-9 cursor-pointer hover:scale-105 ease-in-out duration-300'>
+                                    <Actor actor={actor}/>
                                 </li>
-                                ))}
+                            ))}
                             </ul>
                         </div>
                     </div>
