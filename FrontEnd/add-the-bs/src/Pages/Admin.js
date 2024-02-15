@@ -65,7 +65,7 @@ const Admin = () => {
                 className={`px-4 mx-5 py-2 rounded ${
                   activeTab === 1
                     ? "border-b-2 border-blue-500 bg-blue-500 text-white"
-                    : "border-b-4 border-blue-500 text-gray-800"
+                    : "border-b-4 border-blue-500 text-gray-800 text-white"
                 }`}
                 onClick={() => changeTab(1)}
               >
@@ -75,7 +75,7 @@ const Admin = () => {
                 className={`px-4 mx-5 py-2 rounded ${
                   activeTab === 2
                     ? "border-b-2 border-blue-500 bg-blue-500 text-white"
-                    : "border-blue-500 text-gray-800 border-b-4"
+                    : "border-blue-500 text-gray-800 border-b-4 text-white"
                 }`}
                 onClick={() => changeTab(2)}
               >
@@ -86,25 +86,21 @@ const Admin = () => {
             <div>
               {activeTab === 1 ? (
                 <ul className="mt-5 container flex flex-col text-base">
-                  <li className="grid grid-cols-4 gap-4 text-lg text-center">
+                  <li className="grid grid-cols-3 gap-4 text-lg text-center">
                     <div>
                       <b>Email</b>
                     </div>
                     <div>
                       <b>User ID</b>
                     </div>
-                    <div>
-                      <b>User Key</b>
-                    </div>
                   </li>
                   <hr className="mb-5" />
 
                   {users.map((user) => (
                     <>
-                      <li key={user._id} className="grid grid-cols-4 gap-4">
-                        <div className="mr-6">{user.Gmail}</div>
-                        <div>{user._id}</div>
-                        <div>{user.Key}</div>
+                      <li key={user.id} className="grid grid-cols-3 gap-4">
+                        <div className="mr-6">{user.Email}</div>
+                        <div>{user.id}</div>
                         <div className="flex justify-center">
                           <button
                             type="button"

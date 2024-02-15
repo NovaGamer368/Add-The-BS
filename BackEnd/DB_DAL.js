@@ -3,23 +3,6 @@ const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
 const dotenv = require("dotenv");
 
-// const connection = mysql.createConnection(
-//   "Server=localhost;Database=Add_The_BS;Integrated Security=True;"
-// );
-// // Attempt to establish the connection
-// connection.connect(function (err) {
-//   if (err) {
-//     console.error("Error connecting to database:", err);
-//     return;
-//   }
-//   console.log("Connected to database successfully");
-// });
-
-// // Listen for any errors during the connection process
-// connection.on("error", function (err) {
-//   console.error("Database error:", err);
-// });
-
 const config = {
   server: "localhost",
   database: "Add_The_BS",
@@ -91,16 +74,20 @@ exports.DAL = {
     }
   },
   getAllUsers: async () => {
-    const query = "SELECT * FROM users";
-    return new Promise((resolve, reject) => {
-      connection.query(query, (error, results) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(results);
-        }
-      });
-    });
+    try {
+      await pool.connect();
+
+      const query = `SELECT * FROM Users`;
+
+      const result = await pool.query(query);
+      return result.recordset;
+    } catch (error) {
+      console.error("Error fetching all users:", error);
+      throw error;
+    } finally {
+      // Close the connection pool
+      pool.close();
+    }
   },
   generateKey: () => {
     return uuidv4();
