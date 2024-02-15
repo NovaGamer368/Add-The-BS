@@ -104,8 +104,8 @@ const Signup = () => {
   return (
     <>
       <div className="App">
-        <div className="h-screen flex flex-col items-center justify-center">
-          <div className="m-auto p-5 w-1/4 border-2 border-white rounded shadow-drawer">
+        <div className="bg-[#282c34] h-screen flex flex-col items-center justify-center">
+          <div className="m-auto p-5 w-1/4 border-2 border-white rounded shadow-drawer bg-gray-400">
             <h1 className="text-6xl font-bold mb-3">Cut The BS</h1>
             <h3 className="text-2xl mb-3 underline">Sign up!</h3>
             {errors.apiError && (

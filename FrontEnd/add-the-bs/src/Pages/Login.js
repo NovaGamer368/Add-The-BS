@@ -4,44 +4,78 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [login, setLogin] = useState(null);
+  const [errors, setErrors] = useState({});
+
   const navigate = useNavigate();
+
+  const validateFormValues = () => {
+    let isValid = true;
+    const newErrors = {};
+    const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+
+    if (!emailRegex.test(email)) {
+      newErrors.email = "Email must be in a valid format";
+      isValid = false;
+    }
+
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+      isValid = false;
+    }
+    if (!password.trim()) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      const response = await fetch("http://localhost:3001/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      });
-      const data = await response.json();
-      if (data.success) {
-        sessionStorage.setItem("sessionKey", data.key);
-        sessionStorage.setItem("userId", data.userId);
-        navigate("/home");
-      } else {
-        console.log("Login failed:", data.Message);
-        setLogin(false);
+    console.log(validateFormValues());
+    if (validateFormValues()) {
+      try {
+        const response = await fetch("http://localhost:3001/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password,
+          }),
+        });
+        const data = await response.json();
+        if (data.success) {
+          sessionStorage.setItem("sessionKey", data.key);
+          sessionStorage.setItem("userId", data.userId);
+          navigate("/home");
+        } else {
+          setErrors({
+            apiError: `Login failed: ${data.Message}`,
+          });
+          console.log("Login failed:", data.Message);
+        }
+      } catch (error) {
+        setErrors({
+          apiError: `An error occurred during login: ${error.Message}`,
+        });
+        console.error("An error occurred during login:", error);
       }
-    } catch (error) {
-      console.error("An error occurred during login:", error);
     }
   };
 
   return (
     <>
-      <div className="App">
+      <div className="App bg-[#282c34]">
         <div className="h-screen flex flex-col items-center justify-center">
-          <div className="m-auto p-5 w-1/4 border-2 border-white rounded shadow-drawer">
+          <div className="m-auto p-5 w-1/4 border-2 border-white rounded shadow-drawer bg-gray-400">
             <h1 className="text-6xl font-bold mb-3">Cut The BS</h1>
             <h3 className="text-2xl mb-3 underline">Login</h3>
+            {errors.apiError && (
+              <p className="text-red-500">{errors.apiError}</p>
+            )}
             <div>
               <form onSubmit={handleSubmit}>
                 <div class="mb-6">
@@ -51,6 +85,10 @@ const Login = () => {
                   >
                     Your email
                   </label>
+                  {errors.email && (
+                    <p className="text-red-500">{errors.email}</p>
+                  )}
+
                   <input
                     type="email"
                     id="email"
@@ -58,7 +96,6 @@ const Login = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Email"
-                    required
                   />
                 </div>
                 <div class="mb-6">
@@ -68,6 +105,9 @@ const Login = () => {
                   >
                     Your password
                   </label>
+                  {errors.password && (
+                    <p className="text-red-500">{errors.password}</p>
+                  )}
                   <input
                     type="password"
                     id="password"
@@ -75,7 +115,6 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Password"
-                    required
                   />
                 </div>
                 <div className="mb-3">
