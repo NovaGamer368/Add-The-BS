@@ -280,7 +280,7 @@ class MovieDB_DAL {
   async getMoviePoster(poster) {
     try {
       const url = `https://image.tmdb.org/t/p/w500/${poster}`;
-      console.log(poster);
+      // console.log(poster);
       return url;
     } catch (e) {
       console.log("ERROR WITH API:", e.message);

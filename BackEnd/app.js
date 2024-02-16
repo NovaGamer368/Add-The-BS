@@ -282,7 +282,7 @@ app.get("/MovieDB/Movie/Similar/:movieId", async (req, res) => {
 app.get("/MovieDB/Poster/:poster", async (req, res) => {
   try {
     let poster = req.params.poster;
-    console.log("poster is: ", poster);
+    // console.log("poster is: ", poster);
     let movies = await movieDB.getMoviePoster(poster);
     res.json(movies);
   } catch (error) {
