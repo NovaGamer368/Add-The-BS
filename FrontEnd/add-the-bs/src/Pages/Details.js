@@ -6,6 +6,7 @@ const Details = () => {
   const [movieData, setMovieData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const params = useParams();
+  const [posterUrl, setPosterUrl] = useState("");
 
   useEffect(() => {
     console.log();
@@ -19,19 +20,44 @@ const Details = () => {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [params.id]);
+
+  useEffect(() => {
+    fetchPoster(movieData.backdrop_path).then((data) => {
+      setIsLoading(false);
+      setPosterUrl(data);
+      //console.log(posterUrl);
+    });
+  }, [movieData.backdrop_path_path, posterUrl]);
+
+  const fetchPoster = async (posterUrl) => {
+    try {
+      if(!posterUrl){
+        return "";
+      }
+      const response = await fetch(
+        `http://localhost:3001/MovieDB/Poster${posterUrl}`
+      );
+      const data = await response.json();
+      //console.log("movie image url is: ", data);
+      return data;
+    }
+    catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
 
   if (isLoading) {
     return <h1 className="text-xl text-center">LOADING...</h1>;
   }
+
   if (Object.keys(movieData).length > 0) {
-
-
   return (
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", backgroundColor: "#282c34", minHeight: "100vh", padding: "20px" }}>
       <div style={{ flex: "0 0 auto", marginRight: "20px" }}>
     <div className="col-md-4">
-      <img src={movieData.background_path} className="img-fluid rounded-start" alt="productImg"/>
+      <img src={posterUrl} className="img-fluid rounded-start" alt="productImg"/>
     </div> 
         <div style={{ marginTop: "10px", color: "white" }}>
           <p>Rating: {movieData.rating}</p>
