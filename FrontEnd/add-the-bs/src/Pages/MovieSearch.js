@@ -32,7 +32,7 @@ const MovieSearch = () => {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                                     </svg>
                                 </div>
-                                <input type="search" id="default-search" className="block w-full h-18 p-4 pl-14 text-2xl border rounded-3xl bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" placeholder="Enter Movie title..." required value={movieSearch} onChange={e => setMovieSearch(e.target.value)}/>
+                                <input type="text" id="default-search" className="block w-full h-18 p-4 pl-14 text-2xl border rounded-3xl bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" placeholder="Enter Movie title..." required value={movieSearch} onChange={e => setMovieSearch(e.target.value)}/>
                                 <button type="submit" className="text-white absolute right-6 bottom-2.5 focus:ring-4 focus:outline-none font-medium rounded-3xl text-xl px-8 py-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-800"> Search </button>
                             </div>
                         </div>
@@ -70,7 +70,7 @@ const MovieSearch = () => {
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                                         </svg>
                                     </div>
-                                    <input type="search" id="default-search" className="block w-full h-18 p-4 pl-14 text-2xl border rounded-3xl bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" placeholder="Enter Movie title..." required value={movieSearch} onChange={e => setMovieSearch(e.target.value)}/>
+                                    <input type="text" id="default-search" className="block w-full h-18 p-4 pl-14 text-2xl border rounded-3xl bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" placeholder="Enter Movie title..." required value={movieSearch} onChange={e => setMovieSearch(e.target.value)}/>
                                     <button type="submit" className="text-white absolute right-6 bottom-2.5 focus:ring-4 focus:outline-none font-medium rounded-3xl text-xl px-8 py-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-800"> Search </button>
                                 </div>
                             </div>
