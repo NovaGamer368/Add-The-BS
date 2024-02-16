@@ -3,9 +3,9 @@ import { useParams } from "react-router-dom";
 import { red } from "tailwindcss/colors";
 
 const Details = () => {
+  const params = useParams();
   const [movieData, setMovieData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const params = useParams();
   const [posterUrl, setPosterUrl] = useState("");
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const Details = () => {
       setPosterUrl(data);
       //console.log(posterUrl);
     });
-  }, [movieData.backdrop_path_path, posterUrl]);
+  }, [movieData.backdrop_path, posterUrl]);
 
   const fetchPoster = async (posterUrl) => {
     try {
