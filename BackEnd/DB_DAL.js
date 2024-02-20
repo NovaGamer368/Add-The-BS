@@ -20,18 +20,19 @@ exports.DAL = {
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
       await pool.connect();
-      // console.log(pool);
+      console.log(pool);
 
-      const query = `INSERT INTO Users (id, Email, Username, Img, Password) VALUES ('${key}', '${email}', '${username}', '/images/profile-pictures/default-user.png', '${hashedPassword}')`;
+      const query = `INSERT INTO users (userKey, email, username, img, password) VALUES ('${key}', '${email}', '${username}', '/images/profile-pictures/default-user.png', '${hashedPassword}')`;
       // console.log("Testing query: ", query);
 
       const request = pool.request();
-      // console.log("Request going out");
+      // console.log("Request going out", request);
       await request.query(query);
-      // console.log("query ran");
+      // console.log("query ran: ", response);
 
       return true;
     } catch (e) {
+      // console.log(e);
       return false;
     } finally {
       pool.close();
@@ -41,7 +42,7 @@ exports.DAL = {
     try {
       await pool.connect();
 
-      const query = `SELECT * FROM Users`;
+      const query = `SELECT * FROM users`;
 
       const result = await pool.query(query);
       return result.recordset;
@@ -53,11 +54,11 @@ exports.DAL = {
       pool.close();
     }
   },
-  getUserById: async (userId) => {
+  getUserById: async (userKey) => {
     try {
       await pool.connect();
 
-      const query = ` Select * from Users where id = '${userId}'`;
+      const query = ` Select * from Users where userKey = '${userKey}'`;
 
       const request = pool.request();
       const result = await request.query(query);
@@ -78,7 +79,7 @@ exports.DAL = {
     try {
       await pool.connect();
 
-      const query = ` Select * from Users where Email = '${email}'`;
+      const query = ` Select * from users where Email = '${email}'`;
 
       const request = pool.request();
       const result = await request.query(query);
@@ -114,7 +115,28 @@ exports.DAL = {
     try {
       await pool.connect();
 
-      const query = `DELETE FROM Users WHERE id = '${id}';`;
+      const query = `DELETE FROM users WHERE id = '${id}';`;
+
+      const request = pool.request();
+      const result = await request.query(query);
+      console.log(result);
+      if (result.rowsAffected > 0) {
+        return result;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.error("Error fetching user by ID:", e);
+      throw e;
+    } finally {
+      pool.close();
+    }
+  },
+  deleteUserByUserKey: async (userKey) => {
+    try {
+      await pool.connect();
+
+      const query = `DELETE FROM users WHERE id = '${userKey}';`;
 
       const request = pool.request();
       const result = await request.query(query);

@@ -73,7 +73,18 @@ app.get("/users", async (req, res) => {
     res.status(500).json({ success: false, error: "Failed to fetch users" });
   }
 });
-//GETS USER BY ID
+//GETS USER BY UserKey
+app.get("/user/key/:key", async (req, res) => {
+  try {
+    let key = req.params.key;
+    let user = await dal.getUserByUserKey(key);
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+//GETS USER BY id
 app.get("/user/:id", async (req, res) => {
   try {
     let id = req.params.id;
