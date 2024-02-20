@@ -43,10 +43,7 @@ function App() {
           <div className="overflow-hidden overflow-x-scroll scroll whitespace-nowrap scroll-smooth">
             <ul className="container flex">
               {movieData.results?.map((movie) => (
-                <li
-                  key={movie.id}
-                  className="p-9 cursor-pointer hover:scale-105 ease-in-out duration-300"
-                >
+                <li key={movie.id} className="p-9 cursor-pointer hover:scale-105 ease-in-out duration-300">
                   <Movie movie={movie} />
                 </li>
               ))}

@@ -18,16 +18,16 @@ import GenreList from "./Pages/GenreList";
 
 const router = createBrowserRouter([
   {
-    path: "/home",
-    element: (<><Navbar /><App /><Footer /></>)
-  },
-  {
     path: "/login",
     element: (<><Login /></>)
   },
   {
+    path: "/signup",
+    element: (<><Signup/></>)
+  },
+  {
     path: "/",
-    element: (<><Signup /></>)
+    element: (<><Navbar /><App /><Footer /></>)
   },
   {
     path: "/profile",

@@ -23,21 +23,24 @@ const Details = () => {
   }, [params.id]);
 
   useEffect(() => {
-    fetchPoster(movieData.backdrop_path).then((data) => {
+    fetchPoster(movieData.backdrop_path || movieData.poster_path).then((data) => {
       setIsLoading(false);
       setPosterUrl(data);
       //console.log(posterUrl);
     });
-  }, [movieData.backdrop_path, posterUrl]);
+  }, [movieData.backdrop_path, movieData.poster_path]);
 
-  const fetchPoster = async (posterUrl) => {
+  const fetchPoster = async (backdropUrl, posterUrl) => {
     try {
-      if(!posterUrl){
+      let url;
+      if(backdropUrl) {
+        url = `http://localhost:3001/MovieDB/Poster${backdropUrl}`;
+      } else if (posterUrl) {
+        url =  `https://localhost:3001/MovieDB/Poster${posterUrl}`;
+      } else {
         return "";
       }
-      const response = await fetch(
-        `http://localhost:3001/MovieDB/Poster${posterUrl}`
-      );
+      const response = await fetch(url);
       const data = await response.json();
       //console.log("movie image url is: ", data);
       return data;
