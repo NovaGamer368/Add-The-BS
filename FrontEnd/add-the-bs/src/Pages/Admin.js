@@ -5,6 +5,7 @@ const Admin = () => {
   //   const [reviews, setReviews] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState(1);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     fetchUsers();
@@ -30,9 +31,20 @@ const Admin = () => {
   const changeTab = (tabNumber) => {
     setActiveTab(tabNumber);
   };
-  const deleteUser = (id) => {
-    console.log("Deleting user: ", id);
+  const deleteUser = async (user) => {
+    console.log("Deleting user: ", user.id);
     //API call here
+    const response = await fetch(
+      `http://localhost:3306/user/delete/${user.id}`,
+      {
+        method: "DELETE",
+      }
+    );
+    console.log(response);
+    if (response.ok) {
+      setMessage("User " + user.Email + " deleted Successfully");
+      fetchUsers();
+    }
   };
 
   return (
@@ -60,6 +72,7 @@ const Admin = () => {
           </div>
         ) : (
           <>
+            {message && <h2>{message}</h2>}
             <div className="flex flex-wrap -mb-px font-medium text-center my-5 text-xl">
               <button
                 className={`px-4 mx-5 py-2 rounded ${
@@ -91,7 +104,7 @@ const Admin = () => {
                       <b>Email</b>
                     </div>
                     <div>
-                      <b>User ID</b>
+                      <b>User ID Keys</b>
                     </div>
                   </li>
                   <hr className="mb-5" />
@@ -105,7 +118,7 @@ const Admin = () => {
                           <button
                             type="button"
                             className="text-red-700 w-40 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
-                            onClick={() => deleteUser(user._id)}
+                            onClick={() => deleteUser(user)}
                           >
                             Delete User
                           </button>
