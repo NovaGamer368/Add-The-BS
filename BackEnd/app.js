@@ -37,23 +37,6 @@ const upload = multer({ storage: storage });
 
 app.use(express.static("public"));
 
-//UPDATE
-app.put("/user/:id", upload.single("Img"), async (req, res) => {
-  try {
-    const userId = req.params.id;
-    const updatedUserData = req.body;
-    if (req.file) {
-      updatedUserData.Img = `./profile-pictures/${req.file.filename}`;
-    }
-
-    const updatedUser = await dal.updateUserProfile(userId, updatedUserData);
-    res.json(updatedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
 //CREATE
 app.post("/createUser", async (req, res) => {
   const { email, username, password } = req.body;
@@ -79,6 +62,59 @@ app.post("/createUser", async (req, res) => {
     });
   }
 });
+//READ
+// GETS ALL USERS
+app.get("/users", async (req, res) => {
+  try {
+    const users = await dal.getAllUsers();
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Failed to fetch users" });
+  }
+});
+//GETS USER BY ID
+app.get("/user/:id", async (req, res) => {
+  try {
+    let id = req.params.id;
+    let user = await dal.getUserById(id);
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+//UPDATE
+app.put("/user/:id", upload.single("Img"), async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const updatedUserData = req.body;
+    if (req.file) {
+      updatedUserData.Img = `./profile-pictures/${req.file.filename}`;
+    }
+
+    const updatedUser = await dal.updateUserProfile(userId, updatedUserData);
+    res.json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+//DELETE
+app.delete("/user/delete/:id", async (req, res) => {
+  try {
+    const userId = req.params.id;
+    console.log("deleting user: ", userId);
+
+    await dal.deleteUserById(userId);
+    res.json({ message: "User Deleted Successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 //ADMIN STUFF???
 app.post("/createKey", async (req, res) => {
@@ -101,30 +137,6 @@ app.post("/createKey", async (req, res) => {
   //   res.json({ Message: "An error occurred while registering user" });
   // }
 });
-
-// GETS ALL USERS
-app.get("/users", async (req, res) => {
-  try {
-    const users = await dal.getAllUsers();
-    res.json(users);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, error: "Failed to fetch users" });
-  }
-});
-
-//GTES USER BY ID
-app.get("/user/:id", async (req, res) => {
-  try {
-    let id = req.params.id;
-    let user = await dal.getUserById(id);
-    res.json(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
 //LOGIN STUFF
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
