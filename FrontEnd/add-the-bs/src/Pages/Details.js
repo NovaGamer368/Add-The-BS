@@ -1,12 +1,15 @@
 import { React, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { red } from "tailwindcss/colors";
+import {FaStar} from "react-icons/fa";
 
 const Details = () => {
   const params = useParams();
   const [movieData, setMovieData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [posterUrl, setPosterUrl] = useState("");
+  const [comment, setComment] = useState("");
+  const maxCharacters = 120;
 
   useEffect(() => {
     console.log();
@@ -50,6 +53,36 @@ const Details = () => {
       throw error;
     }
   };
+  
+  const handleCommentChange = (event) => {
+    const text = event.target.value;
+    if(text.length <= maxCharacters) {
+      setComment(text);
+    }
+  }
+
+  const createArray = (length) => [
+    ...Array(length)
+  ];
+
+  function Star({selected = false, onSelect}){
+    return <FaStar color={selected ? "yellow" : "white"} onClick={onSelect}/>
+  }
+
+  function StarRating({totalStars = 5}) {
+    const [selectedStars, setSelectedStars] = useState(0);
+    return (
+    <>
+      {createArray(totalStars).map((n, i) => (
+        <Star key ={i} selected={selectedStars > i} onSelect={() => setSelectedStars(i + 1)}/>
+      ))}
+    </>
+    );
+  }
+
+  function Stars(){
+    return <StarRating/>
+  }
 
   if (isLoading) {
     return <h1 className="text-xl text-center">LOADING...</h1>;
@@ -59,9 +92,9 @@ const Details = () => {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", backgroundColor: "#282c34", minHeight: "100vh", padding: "20px" }}>
       <div style={{ flex: "0 0 auto", marginRight: "20px" }}>
-    <div className="col-md-4">
-      <img src={posterUrl} className="img-fluid rounded-start" alt="productImg"/>
-    </div> 
+        <div className="col-md-4">
+          <img src={posterUrl} className="img-fluid rounded-start" alt="productImg"/>
+        </div> 
         <div style={{ marginTop: "10px", color: "white" }}>
           <p>Rating: {movieData.rating}</p>
           {/* Add more rating details if needed */}
@@ -70,41 +103,32 @@ const Details = () => {
       <div style={{ flex: "1 1 auto", color: "white" }}>
         <h2 style={{ fontSize: "24px", marginBottom: "10px" }}>{movieData.title}</h2>
         <p style={{ fontSize: "16px" }}>{movieData.overview}</p>
-        <br></br>
+        <br/>
         <p style={{ fontSize: "16px" }}>Actors: </p>
         <p style={{ fontSize: "16px" }}>More Like This: </p>
-
-        Reviews: 
-
-
         {/* Add more movie details if needed */}
-      
-
-  <br>
-  </br>
-  <li></li>
-
-      <label htmlFor="comment" className="block text-sm font-medium leading-6 text-white-900">
-        Add your comment
-      </label>
-      <div className="mt-2">
-        <textarea
-          rows={4}
-          name="comment"
-          id="comment"
-          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-          defaultValue={''}
-          
-        />
-        <button style={{backgroundColor: "red", border: "rounded"}}>Leave review</button>
+        <br/>
+        <div>
+          <h1 className="mb-4">Leave your review:</h1>
+            <div className="flex mb-4">
+              <Stars/>
+            </div>
+            <div>
+              <label htmlFor="comment" className="block text-sm font-medium leading-6 text-white-900">
+                Add your comment
+              </label>
+              <div className="mt-2">
+                <textarea rows={4} name="comment" id="comment" className="block p-2 text-lg w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 " value={comment} onChange={handleCommentChange}/>
+                <p className="flex pl-96 mb-2">{comment.length}/{maxCharacters} characters</p>
+                <button style={{backgroundColor: "red", border: "rounded"}} className="rounded-lg h-10 w-32">Leave review</button>
+              </div>
+            </div>
+        </div>
+      Reviews:
       </div>
-</div>
-
-
-
     </div>
-  ); 
-};
+    ); 
+  }
 }
- 
+
 export default Details;
