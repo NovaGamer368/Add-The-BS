@@ -119,7 +119,7 @@ const Details = () => {
               </label>
               <div className="mt-2">
                 <textarea rows={4} name="comment" id="comment" className="block p-2 text-lg w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 " value={comment} onChange={handleCommentChange}/>
-                <p className="flex pl-96 mb-2">{comment.length}/{maxCharacters} characters</p>
+                <p className="flex pl-96">{comment.length}/{maxCharacters} characters</p>
                 <button style={{backgroundColor: "red", border: "rounded"}} className="rounded-lg h-10 w-32">Leave review</button>
               </div>
             </div>
