@@ -101,8 +101,9 @@ const Details = () => {
         </div>
       </div>
       <div style={{ flex: "1 1 auto", color: "white" }}>
-        <h2 style={{ fontSize: "24px", marginBottom: "10px" }}>{movieData.title}</h2>
-        <p style={{ fontSize: "16px" }}>{movieData.overview}</p>
+        <h2 style={{ fontSize: "50px", marginBottom: "10px" }}>{movieData.title}</h2>
+        <h3 className="pl-32" style={{ fontSize: "25px", marginBottom: "10px" }}>{movieData.tagline}</h3>
+        <p className="m-10" style={{ fontSize: "22px" }}>{movieData.overview}</p>
         <br/>
         <p style={{ fontSize: "16px" }}>Actors: </p>
         <p style={{ fontSize: "16px" }}>More Like This: </p>
