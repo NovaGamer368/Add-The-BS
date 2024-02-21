@@ -20,7 +20,7 @@ const Admin = () => {
   const fetchUsers = async () => {
     const response = await fetch("http://localhost:3306/users");
     const data = await response.json();
-    setUsers(data);
+    setUsers(data.slice().reverse());
   };
 
   //   const fetchReviews = async () => {
@@ -32,18 +32,22 @@ const Admin = () => {
     setActiveTab(tabNumber);
   };
   const deleteUser = async (user) => {
-    console.log("Deleting user: ", user.id);
+    console.log("Deleting user: ", user);
     //API call here
-    const response = await fetch(
-      `http://localhost:3306/user/delete/${user.id}`,
-      {
-        method: "DELETE",
+    if (user.userKey !== null) {
+      const response = await fetch(
+        `http://localhost:3306/user/delete/key/${user.userKey}`,
+        {
+          method: "DELETE",
+        }
+      );
+      console.log(response);
+      if (response.ok) {
+        setMessage("User " + user.Email + " deleted Successfully");
+        fetchUsers();
       }
-    );
-    console.log(response);
-    if (response.ok) {
-      setMessage("User " + user.Email + " deleted Successfully");
-      fetchUsers();
+    } else {
+      setMessage("YOU CANNOT DELETE ONE OF 1k IMPORTED USERS");
     }
   };
 
@@ -99,21 +103,47 @@ const Admin = () => {
             <div>
               {activeTab === 1 ? (
                 <ul className="mt-5 container flex flex-col text-base">
-                  <li className="grid grid-cols-3 gap-4 text-lg text-center">
+                  <li className="grid grid-cols-5 gap-4 text-lg text-center">
                     <div>
                       <b>Email</b>
                     </div>
                     <div>
                       <b>User ID Keys</b>
                     </div>
+                    <div>
+                      <b>Full Name</b>
+                    </div>
+                    <div>
+                      <b>Address</b>
+                    </div>
                   </li>
                   <hr className="mb-5" />
 
                   {users.map((user) => (
                     <>
-                      <li key={user.id} className="grid grid-cols-3 gap-4">
-                        <div className="mr-6">{user.Email}</div>
-                        <div>{user.id}</div>
+                      <li key={user.id} className="grid grid-cols-5 gap-4">
+                        <div className="mr-6">{user.email}</div>
+                        <div>
+                          {user.userKey ? <>{user.userKey}</> : <>NO KEY</>}
+                        </div>
+                        <div>
+                          {user.fname && user.lname ? (
+                            <>
+                              {user.fname} {user.lname}
+                            </>
+                          ) : (
+                            <>NO NAME</>
+                          )}
+                        </div>
+                        <div>
+                          {user.city && user.street && user.state ? (
+                            <>
+                              {user.street} {user.city} {user.state}
+                            </>
+                          ) : (
+                            <>NO ADDRESS</>
+                          )}
+                        </div>
                         <div className="flex justify-center">
                           <button
                             type="button"

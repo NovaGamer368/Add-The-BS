@@ -136,7 +136,7 @@ exports.DAL = {
     try {
       await pool.connect();
 
-      const query = `DELETE FROM users WHERE id = '${userKey}';`;
+      const query = `DELETE FROM users WHERE userKey = '${userKey}'`;
 
       const request = pool.request();
       const result = await request.query(query);
@@ -147,7 +147,7 @@ exports.DAL = {
         return null;
       }
     } catch (e) {
-      console.error("Error fetching user by ID:", e);
+      console.error("Error fetching user by Key:", e);
       throw e;
     } finally {
       pool.close();

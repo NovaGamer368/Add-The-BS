@@ -126,6 +126,18 @@ app.delete("/user/delete/:id", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+app.delete("/user/delete/key/:key", async (req, res) => {
+  try {
+    const key = req.params.key;
+    console.log("deleting user: ", key);
+
+    await dal.deleteUserByUserKey(key);
+    res.json({ message: "User Deleted Successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 //ADMIN STUFF???
 app.post("/createKey", async (req, res) => {
