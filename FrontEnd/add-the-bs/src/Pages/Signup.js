@@ -11,7 +11,7 @@ const Signup = () => {
   const validateFormValues = () => {
     let isValid = true;
     const newErrors = {};
-    const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
     const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*[0-9]).{8,}$/;
 
     if (!emailRegex.test(email)) {
