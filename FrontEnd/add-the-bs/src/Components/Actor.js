@@ -8,7 +8,6 @@ const Actor = ({actor}) => {
         fetchPoster(actor.profile_path).then((data) => {
             setIsLoading(false);
             setPoserUrl(data);
-            //console.log(posterUrl);
         });
     }, [actor.profile_path, posterUrl]);
 
@@ -50,7 +49,7 @@ const Actor = ({actor}) => {
             </div>
             <hr className="mx-auto w-48 h-1 bg-gray-100 rounded border-0 md:my-4" />
             <div>
-                <h4 className="mb-2 flex text-white text-3xl font-bold">Know For: </h4>
+                <h4 className="mb-2 flex text-white text-3xl font-bold">Known For: </h4>
                 <p className="mb-4 text-5xl flex justify-center">
                     {actor.known_for_department}
                 </p>

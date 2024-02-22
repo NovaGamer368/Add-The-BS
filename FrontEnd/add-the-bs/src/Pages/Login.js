@@ -72,7 +72,7 @@ const Login = () => {
         <div className="App-header">
           <div className="h-screen w-screen flex flex-col items-center justify-center">
             <div className="m-auto p-5 w-1/4 border-4 border-gray-700 rounded shadow-drawer bg-gray-400">
-              <h1 className="text-6xl font-bold mb-6 underline">Cut The BS</h1>
+              <h1 className="text-6xl font-bold mb-6 underline">Add The BS</h1>
               <h3 className="text-3xl mb-5">Login</h3>
               {errors.apiError && (
                 <p className="text-red-500">{errors.apiError}</p>
