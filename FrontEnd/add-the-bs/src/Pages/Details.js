@@ -9,6 +9,7 @@ const Details = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [posterUrl, setPosterUrl] = useState("");
   const [comment, setComment] = useState("");
+  const [selectedStars, setSelectedStars] = useState(0);
   const maxCharacters = 120;
 
   useEffect(() => {
@@ -70,18 +71,13 @@ const Details = () => {
   }
 
   function StarRating({totalStars = 5}) {
-    const [selectedStars, setSelectedStars] = useState(0);
-    return (
-    <>
-      {createArray(totalStars).map((n, i) => (
-        <Star key ={i} selected={selectedStars > i} onSelect={() => setSelectedStars(i + 1)}/>
+    return(
+      <>
+      {[...Array(totalStars)].map((_, i) => (
+        <Star key={i} selected={selectedStars > i} onSelect={() => setSelectedStars(i + 1)}/>
       ))}
-    </>
-    );
-  }
-
-  function Stars(){
-    return <StarRating/>
+      </>
+    )
   }
 
   if (isLoading) {
@@ -111,19 +107,19 @@ const Details = () => {
         <br/>
         <div>
           <h1 className="mb-4">Leave your review:</h1>
-            <div className="flex mb-4">
-              <Stars/>
+          <div className="flex mb-4">
+            <StarRating/>
+          </div>
+          <div>
+            <label htmlFor="comment" className="block text-sm font-medium leading-6 text-white-900">
+              Add your comment
+            </label>
+            <div className="mt-2">
+              <textarea rows={4} name="comment" id="comment" className="block p-2 text-lg w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 " value={comment} onChange={handleCommentChange}/>
+              <p className="flex pl-96">{comment.length}/{maxCharacters} characters</p>
+              <button style={{backgroundColor: "red", border: "rounded"}} className="rounded-lg h-10 w-32">Leave review</button>
             </div>
-            <div>
-              <label htmlFor="comment" className="block text-sm font-medium leading-6 text-white-900">
-                Add your comment
-              </label>
-              <div className="mt-2">
-                <textarea rows={4} name="comment" id="comment" className="block p-2 text-lg w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 " value={comment} onChange={handleCommentChange}/>
-                <p className="flex pl-96">{comment.length}/{maxCharacters} characters</p>
-                <button style={{backgroundColor: "red", border: "rounded"}} className="rounded-lg h-10 w-32">Leave review</button>
-              </div>
-            </div>
+          </div>
         </div>
       Reviews:
       </div>
