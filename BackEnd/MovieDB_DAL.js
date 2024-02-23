@@ -218,7 +218,6 @@ class MovieDB_DAL {
   //https://developer.themoviedb.org/reference/movie-details
   async getMovieById(id) {
     const url = `${this.baseURL}/movie/${id}?language=en-US`;
-    console.log(url);
     try {
       const response = await fetch(url, {
         method: "GET",
@@ -228,17 +227,19 @@ class MovieDB_DAL {
         },
       });
       const data = await response.json();
-
+  
       if (response.ok) {
-        return data;
+        const { vote_average, ...movieDetails } = data;
+        return { ...movieDetails, rating: vote_average };
       } else {
-        throw new Error(`Failed to fetch people. Status: ${response.status} `);
+        throw new Error(`Failed to fetch movie details. Status: ${response.status}`);
       }
     } catch (error) {
       console.error("Error in API request:", error.message);
       throw error;
     }
   }
+
   async getMovieRecommendations(movieId) {
     try {
       const url = `${this.baseURL}/movie/${movieId}/recommendations?language=en-US&page=1`;
