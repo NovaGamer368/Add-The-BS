@@ -5,22 +5,21 @@ const dotenv = require("dotenv");
 
 const config = {
   server: "localhost",
-  database: "Add_The_BS",
+  database: "AddTheBS2",
   user: "Add_The_BS",
   password: process.env.SQL_PASSWORD,
   options: {
-    encrypt: false, // Set to true if you're using Azure SQL Database
-    trustServerCertificate: true, // Set to true if you're using Azure SQL Database
+    encrypt: false,
+    trustServerCertificate: true,
   },
 };
 const pool = new sql.ConnectionPool(config);
-// DELETE FROM Users WHERE id = '7be8110b-5f82-4c43-809c-969d3d8e673f';
 exports.DAL = {
   createUser: async (email, key, username, password) => {
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
       await pool.connect();
-      console.log(pool);
+      // console.log(pool);
 
       const query = `INSERT INTO users (userKey, email, username, img, password) VALUES ('${key}', '${email}', '${username}', '/images/profile-pictures/default-user.png', '${hashedPassword}')`;
       // console.log("Testing query: ", query);
@@ -32,7 +31,7 @@ exports.DAL = {
 
       return true;
     } catch (e) {
-      // console.log(e);
+      console.log(e);
       return false;
     } finally {
       pool.close();

@@ -122,7 +122,7 @@ const Admin = () => {
                   {users.map((user) => (
                     <>
                       <li key={user.id} className="grid grid-cols-5 gap-4">
-                        <div className="mr-6">{user.email}</div>
+                        <div className="mr-6">{user.Email}</div>
                         <div>
                           {user.userKey ? <>{user.userKey}</> : <>NO KEY</>}
                         </div>
