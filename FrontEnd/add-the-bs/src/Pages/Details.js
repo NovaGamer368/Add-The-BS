@@ -62,10 +62,6 @@ const Details = () => {
     }
   }
 
-  const createArray = (length) => [
-    ...Array(length)
-  ];
-
   function Star({selected = false, onSelect}){
     return <FaStar color={selected ? "yellow" : "white"} onClick={onSelect}/>
   }
