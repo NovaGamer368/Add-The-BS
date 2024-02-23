@@ -61,7 +61,6 @@ const Details = () => {
     }
   };
 
-  const createArray = (length) => [...Array(length)];
 
   function Star({ selected = false, onSelect }) {
     return <FaStar color={selected ? "yellow" : "white"} onClick={onSelect} />;
@@ -79,9 +78,7 @@ const Details = () => {
     )  
   }
 
-  function Stars() {
-    return <StarRating />;
-  }
+
 
   function StarRate({ movieData }) {
     const totalStars = 5;
@@ -117,63 +114,12 @@ const Details = () => {
 
   if (Object.keys(movieData).length > 0) {
 
-  // return (
-  //   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", backgroundColor: "#282c34", minHeight: "100vh", padding: "20px" }}>
-  //     <div style={{ flex: "0 0 auto", marginRight: "20px" }}>
-  //       <div className="col-md-4">
-  //         <img src={posterUrl} className="img-fluid rounded-start" alt="productImg"/>
-  //       </div> 
-  //       <div style={{ marginTop: "10px", color: "white" }}>
-  //         <p>Rating: {movieData.rating}</p>
-  //         {/* Add more rating details if needed */}
-  //       </div>
-  //     </div>
-  //     <div style={{ flex: "1 1 auto", color: "white" }}>
-  //       <h2 style={{ fontSize: "50px", marginBottom: "10px" }}>{movieData.title}</h2>
-  //       <h3 className="pl-32" style={{ fontSize: "25px", marginBottom: "10px" }}>{movieData.tagline}</h3>
-  //       <p className="m-10" style={{ fontSize: "22px" }}>{movieData.overview}</p>
-  //       <br/>
-  //       <p style={{ fontSize: "16px" }}>Actors: </p>
-  //       <p style={{ fontSize: "16px" }}>More Like This: </p>
-  //       {/* Add more movie details if needed */}
-  //       <br/>
-  //       <div>
-  //         <h1 className="mb-4">Leave your review:</h1>
-  //         <div className="flex mb-4">
-  //           <StarRating/>
-  //         </div>
-  //         <div>
-  //           <label htmlFor="comment" className="block text-sm font-medium leading-6 text-white-900">
-  //             Add your comment
-  //           </label>
-  //           <div className="mt-2">
-  //             <textarea rows={4} name="comment" id="comment" className="block p-2 text-lg w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 " value={comment} onChange={handleCommentChange}/>
-  //             <p className="flex pl-96">{comment.length}/{maxCharacters} characters</p>
-  //             <button style={{backgroundColor: "red", border: "rounded"}} className="rounded-lg h-10 w-32">Leave review</button>
-  //           </div>
-  //         </div>
-
-
-
-          
+   
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          backgroundColor: "#282c34",
-          minHeight: "100vh",
-          padding: "20px",
-        }}
-      >
+      <div style={{display: "flex", justifyContent: "space-between", alignItems: "flex-start", backgroundColor: "#282c34", minHeight: "100vh", padding: "20px",}}>
         <div style={{ flex: "0 0 auto", marginRight: "20px" }}>
           <div className="col-md-4">
-            <img
-              src={posterUrl}
-              className="img-fluid rounded-start"
-              alt="productImg"
-            />
+            <img src={posterUrl} className="img-fluid rounded-start" alt="productImg"/>
           </div>
           <div style={{ marginTop: "10px", color: "white", }} >
             <div className="flex flex-row">
@@ -181,14 +127,9 @@ const Details = () => {
             <StarRate movieData={movieData} />
             </div>
             
-
             <p style={{ fontSize: "20px" }}>Runtime: {movieData.runtime}</p>
             <p style={{ fontSize: "20px" }}>Released: {movieData.release_date}</p>
-            <button
-            onClick={handleLeaveReviewClick}
-            style={{ backgroundColor: "Blue", border: "rounded" }}
-            className="rounded-lg h-10 w-32"
-          >
+            <button onClick={handleLeaveReviewClick} style={{ backgroundColor: "Blue", border: "rounded" }} className="rounded-lg h-10 w-32">
             {showReviewSection ? "Cancel" : "Leave a Review"}
           </button>
           {showReviewSection && (
@@ -198,28 +139,15 @@ const Details = () => {
                 <StarRating />
               </div>
               <div>
-                <label
-                  htmlFor="comment"
-                  className="block text-sm font-medium leading-6 text-white-900"
-                >
+                <label htmlFor="comment" className="block text-sm font-medium leading-6 text-white-900" >
                   Add your comment
                 </label>
                 <div className="mt-2">
-                  <textarea
-                    rows={4}
-                    name="comment"
-                    id="comment"
-                    className="block p-2 text-lg w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 "
-                    value={comment}
-                    onChange={handleCommentChange}
-                  />
+                  <textarea rows={4} name="comment" id="comment" className="block p-2 text-lg w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 " value={comment} onChange={handleCommentChange}/>
                   <p className="flex pl-96">
                     {comment.length}/{maxCharacters} characters
                   </p>
-                  <button
-                    style={{ backgroundColor: "red", border: "rounded" }}
-                    className="rounded-lg h-10 w-32"
-                  >
+                  <button style={{ backgroundColor: "red", border: "rounded" }} className="rounded-lg h-10 w-32" >
                     Leave review
                   </button>
                 </div>
