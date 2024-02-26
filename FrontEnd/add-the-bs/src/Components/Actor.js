@@ -1,8 +1,8 @@
-import {useEffect, useState} from 'react'
+import { useEffect, useState } from "react";
 
-const Actor = ({actor}) => {
-    const [isLoading, setIsLoading] = useState(true);
-    const [posterUrl, setPoserUrl] = useState("");
+const Actor = ({ actor }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [posterUrl, setPoserUrl] = useState("");
 
     useEffect(() => {
         fetchPoster(actor.profile_path).then((data) => {
@@ -74,4 +74,4 @@ const Actor = ({actor}) => {
     )
 }
 
-export default Actor
+export default Actor;

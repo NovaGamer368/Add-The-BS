@@ -14,7 +14,7 @@ const Movie = ({ movie }) => {
   }, [movie.poster_path, posterUrl]);
 
   useEffect(() => {
-    fetch(`http://localhost:3001/MovieDB/getGenreList`)
+    fetch(`http://localhost:3306/MovieDB/getGenreList`)
       .then((response) => response.json())
       .then((data) => {
         const genres = {};
@@ -34,13 +34,12 @@ const Movie = ({ movie }) => {
         return "";
       }
       const response = await fetch(
-        `http://localhost:3001/MovieDB/Poster${posterUrl}`
+        `http://localhost:3306/MovieDB/Poster${posterUrl}`
       );
       const data = await response.json();
       //console.log("movie image url is: ", data);
       return data;
-    }
-    catch (error) {
+    } catch (error) {
       console.error(error);
       throw error;
     }
@@ -48,18 +47,18 @@ const Movie = ({ movie }) => {
 
   const getGenreName = (id) => {
     return genreData[id] || "Unknown";
-  }
-
-  function formatDate(dateString){
-    const date = new Date(dateString);
-    const month = date.getMonth() +1;
-    const day = date.getDate();
-    const year = date.getFullYear();
-    return `${month}-${day}-${year}`
   };
 
-  if(isLoading){
-    return <p>LOADING...</p>
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const year = date.getFullYear();
+    return `${month}-${day}-${year}`;
+  }
+
+  if (isLoading) {
+    return <p>LOADING...</p>;
   }
 
   return (
@@ -77,22 +76,37 @@ const Movie = ({ movie }) => {
       <hr className="mx-auto w-48 h-1 bg-gray-100 rounded border-0 md:my-4" />
       <div>
         <h4 className="text-white text-2xl flex">Release Date: </h4>
-        <p className="text-3xl flex justify-center">{formatDate(movie.release_date)}</p>
+        <p className="text-3xl flex justify-center">
+          {formatDate(movie.release_date)}
+        </p>
       </div>
       <div>
         <h4 className="text-white text-2xl flex">Genre: </h4>
         <ul>
           {movie.genre_ids.map((id) => (
             <li key={id} className="flex justify-center">
-            {getGenreName(id)}
+              {getGenreName(id)}
             </li>
           ))}
         </ul>
       </div>
-      <a href={`/MovieInfo/${movie.id}`} className="flex justify-center items-center mt-8 mb-8 px-6 py-2 text-sm font-medium text-center text-white text-wrap rounded-lg focus:ring-4 focus:outline-none bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">
+      <a
+        href={`/MovieInfo/${movie.id}`}
+        className="flex justify-center items-center mt-8 mb-8 px-6 py-2 text-sm font-medium text-center text-white text-wrap rounded-lg focus:ring-4 focus:outline-none bg-blue-600 hover:bg-blue-700 focus:ring-blue-800"
+      >
         Read more on {movie.title}
-        <svg aria-hidden="true" className="w-4 h-4 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-          <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"/>
+        <svg
+          aria-hidden="true"
+          className="w-4 h-4 ml-2 -mr-1"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fillRule="evenodd"
+            d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+            clipRule="evenodd"
+          />
         </svg>
       </a>
     </div>

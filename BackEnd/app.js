@@ -5,31 +5,17 @@ const cors = require("cors");
 const { v4: uuidv4 } = require("uuid");
 const multer = require("multer");
 const sanitize = require("sanitize-filename");
+const sql = require("mssql");
 
 const dal = require("./DB_DAL").DAL;
 const movieDB = new MovieDB_DAL();
 
-const port = 3001;
+const port = 3306;
 
 const app = express();
 
 app.use(express.json());
 //app.use(express.urlencoded());
-
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-  })
-);
-
-app.use(
-  session({
-    secret: "this_is_a_very_secret_key",
-    resave: false,
-    saveUninitialized: true,
-  })
-);
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -40,10 +26,75 @@ const storage = multer.diskStorage({
     cb(null, sanitizedFilename);
   },
 });
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 
 const upload = multer({ storage: storage });
 
 app.use(express.static("public"));
+
+//CREATE
+app.post("/createUser", async (req, res) => {
+  const { email, username, password } = req.body;
+  // console.log("Received Request Body:", req.body);
+
+  try {
+    const key = await dal.generateKey();
+    // console.log(email, "  |  ", key, "  |  ", email, "  |  ", password);
+    // await sql.query`INSERT INTO Users (id, Email, Username, Img, Password) VALUES ('${key}', '${email}', '${username}', '/images/profile-pictures/default-user.png', '${hashedPassword}')`;
+    const result = await dal.createUser(email, key, email, password);
+    // console.log("Create User Result:", result);
+
+    if (result) {
+      res.json({ success: true, key: key });
+    } else {
+      res.json({ success: false, Message: "Failed to create user" });
+    }
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).json({
+      success: false,
+      Message: "An error occurred while creating the user",
+    });
+  }
+});
+//READ
+// GETS ALL USERS
+app.get("/users", async (req, res) => {
+  try {
+    const users = await dal.getAllUsers();
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Failed to fetch users" });
+  }
+});
+//GETS USER BY UserKey
+app.get("/user/key/:key", async (req, res) => {
+  try {
+    let key = req.params.key;
+    let user = await dal.getUserByUserKey(key);
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+//GETS USER BY id
+app.get("/user/:id", async (req, res) => {
+  try {
+    let id = req.params.id;
+    let user = await dal.getUserById(id);
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 //UPDATE
 app.put("/user/:id", upload.single("Img"), async (req, res) => {
@@ -62,79 +113,53 @@ app.put("/user/:id", upload.single("Img"), async (req, res) => {
   }
 });
 
-//CREATE
-app.post("/createUser", async (req, res) => {
-  const { email, username, password } = req.body;
-
-  console.log("Received Request Body:", req.body);
-
+//DELETE
+app.delete("/user/delete/:id", async (req, res) => {
   try {
-    const key = dal.generateKey();
-    const result = await dal.createUser(email, key, username, password);
-    console.log("Create User Result:", result);
+    const userId = req.params.id;
+    console.log("deleting user: ", userId);
 
-    if (result) {
-      res.json({ success: true, key: key });
-    } else {
-      res.json({ success: false, Message: "Failed to create user" });
-    }
-  } catch (error) {
-    console.error("Error creating user:", error);
-    res.status(500).json({
-      success: false,
-      Message: "An error occurred while creating the user",
-    });
-  }
-});
-
-//ADMIN STUFF???
-app.post("/createKey", async (req, res) => {
-  const email = req.body.email;
-
-  try {
-    let existingUser = await dal.getUserByEmail(email);
-
-    if (existingUser) {
-      res.json({ Message: "User already exists", Key: existingUser.Key });
-    } else {
-      const key = dal.generateKey();
-      let createdUser = await dal.createUser(email, key);
-
-      if (createdUser) {
-        res.json({ Message: "User created successfully", Key: key });
-      } else {
-        res.json({ Message: "Failed to create user" });
-      }
-    }
+    await dal.deleteUserById(userId);
+    res.json({ message: "User Deleted Successfully" });
   } catch (error) {
     console.error(error);
-    res.json({ Message: "An error occurred while registering user" });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
-
-// GETS ALL USERS
-app.get("/users", async (req, res) => {
+app.delete("/user/delete/key/:key", async (req, res) => {
   try {
-    const users = await dal.getAllUsers();
-    res.json(users);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, error: "Failed to fetch users" });
-  }
-});
+    const key = req.params.key;
+    console.log("deleting user: ", key);
 
-//GTES USER BY ID
-app.get("/user/:id", async (req, res) => {
-  try {
-    let id = req.params.id;
-    let user = await dal.getUserById(id);
-    res.json(user);
+    await dal.deleteUserByUserKey(key);
+    res.json({ message: "User Deleted Successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
+//ADMIN STUFF???
+app.post("/createKey", async (req, res) => {
+  // const email = req.body.email;
+  // try {
+  //   let existingUser = await dal.getUserByEmail(email);
+  //   if (existingUser) {
+  //     res.json({ Message: "User already exists", Key: existingUser.Key });
+  //   } else {
+  //     const key = dal.generateKey();
+  //     let createdUser = await dal.createUser(email, key);
+  //     if (createdUser) {
+  //       res.json({ Message: "User created successfully", Key: key });
+  //     } else {
+  //       res.json({ Message: "Failed to create user" });
+  //     }
+  //   }
+  // } catch (error) {
+  //   console.error(error);
+  //   res.json({ Message: "An error occurred while registering user" });
+  // }
+});
 //LOGIN STUFF
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -145,15 +170,14 @@ app.post("/login", async (req, res) => {
       return res.json({ success: false, Message: "User not found" });
     }
 
-    const isValidPassword = await dal.comparePasswords(password, user.Password);
+    console.log("The user ", user.password);
+    const isValidPassword = await dal.comparePasswords(password, user.password);
 
     if (!isValidPassword) {
       return res.json({ success: false, Message: "Invalid password" });
     }
 
-    const key = dal.generateKey();
-    req.session.userId = user._id;
-    res.json({ success: true, key: key, userId: user._id });
+    res.json({ success: true, key: user.id });
   } catch (error) {
     console.error("Error during login:", error);
     res

@@ -48,7 +48,7 @@ const Signup = () => {
     e.preventDefault();
     if (validateFormValues()) {
       try {
-        const response = await fetch("http://localhost:3001/createUser", {
+        const response = await fetch("http://localhost:3306/createUser", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -60,10 +60,11 @@ const Signup = () => {
         });
 
         const data = await response.json();
+        console.log("returned data: ", data);
 
-        if (data.success && data.key) {
+        if (data.success && data.key !== undefined) {
           sessionStorage.setItem("sessionKey", data.key);
-          const loginResponse = await fetch("http://localhost:3001/login", {
+          const loginResponse = await fetch("http://localhost:3306/login", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -73,12 +74,10 @@ const Signup = () => {
               password: password,
             }),
           });
-
           const loginData = await loginResponse.json();
 
           if (loginData.success) {
             sessionStorage.setItem("sessionKey", loginData.key);
-            sessionStorage.setItem("userId", loginData.userId);
             navigate("/home");
           } else {
             setErrors({

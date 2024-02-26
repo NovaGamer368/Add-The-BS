@@ -1,100 +1,165 @@
-const { mongoose, Schema } = require("mongoose");
+const sql = require("mssql");
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
+const dotenv = require("dotenv");
 
-const connectionString = "mongodb+srv://johnstonharlea:I62V4Lsg3tjSkxzC@cluster0.ryaxisq.mongodb.net/User";
-const collectionOne = "users"
-
-mongoose.connect(connectionString, {useUnifiedTopology: true, useNewUrlParser: true});
-
-const connection = mongoose.connection;
-connection.once("open", () => {
-    console.log("Mongoose Connected")
-});
-
-const user = new Schema(
-    {
-      Key: String,
-      Gmail: String,
-      Username: String,
-      Img:String,
-      Password: String,
-    },
-    { collection: collectionOne }
-  );
-  
-  const UserModel = mongoose.model("User", user);
-
+const config = {
+  server: "localhost",
+  database: "AddTheBS2",
+  user: "Add_The_BS",
+  password: process.env.SQL_PASSWORD,
+  options: {
+    encrypt: false,
+    trustServerCertificate: true,
+  },
+};
+const pool = new sql.ConnectionPool(config);
 exports.DAL = {
+  createUser: async (email, key, username, password) => {
+    try {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await pool.connect();
+      // console.log(pool);
 
-    getUserByEmail: async (email) => {
-        return await UserModel.findOne({ Gmail: email }).exec();
-      },
-      updateUserProfile: async (userId, updatedUserData) => {
-        try {
-          const updatedUser = await UserModel.findByIdAndUpdate(
-            userId,
-            { $set: updatedUserData },
-            { new: true }
-          ).exec();
-          return updatedUser;
-        } catch (error) {
-          console.error(error);
-          throw error;
-        }
-      },
-      getUserById: async (userId) => {
-        try {
-          const user = await UserModel.findById(userId).exec();
-          return user;
-        } catch (error) {
-          console.error(error);
-          throw error;
-        }
-      },
-      getAllUsers: async () => {
-        try {
-          const users = await UserModel.find(); 
-          return users;
-        } catch (error) {
-          throw error;
-        }
-      },
-      generateKey: () => {
-        return uuidv4();
-      },
+      const query = `INSERT INTO users (userKey, email, username, img, password) VALUES ('${key}', '${email}', '${username}', '/images/profile-pictures/default-user.png', '${hashedPassword}')`;
+      // console.log("Testing query: ", query);
 
-      createUser: async (email, key, username, password) => {
-        let newUser = {
-          Key: key,
-          Gmail: email,
-          Username: username,
-          Img: "/images/profile-pictures/default-user.png", 
-          Password: await bcrypt.hash(password, 10),
+      const request = pool.request();
+      // console.log("Request going out", request);
+      await request.query(query);
+      // console.log("query ran: ", response);
 
-        };
-      
-        console.log("New User Object:", newUser);
-      
-        try {
-          const result = await UserModel.create(newUser);
-          return result; 
-        } catch (error) {
-          console.log("Error creating user:", error);
-          throw error;
+      return true;
+    } catch (e) {
+      console.log(e);
+      return false;
+    } finally {
+      pool.close();
+    }
+  },
+  getAllUsers: async () => {
+    try {
+      await pool.connect();
+
+      const query = `SELECT * FROM users`;
+
+      const result = await pool.query(query);
+      return result.recordset;
+    } catch (error) {
+      console.error("Error fetching all users:", error);
+      throw error;
+    } finally {
+      // Close the connection pool
+      pool.close();
+    }
+  },
+  getUserById: async (userKey) => {
+    try {
+      await pool.connect();
+
+      const query = ` Select * from Users where userKey = '${userKey}'`;
+
+      const request = pool.request();
+      const result = await request.query(query);
+      console.log(result);
+      if (result.recordset.length > 0) {
+        return result.recordset[0];
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.error("Error fetching user by ID:", error);
+      throw error;
+    } finally {
+      pool.close();
+    }
+  },
+  getUserByEmail: async (email) => {
+    try {
+      await pool.connect();
+
+      const query = ` Select * from users where Email = '${email}'`;
+
+      const request = pool.request();
+      const result = await request.query(query);
+      console.log(result);
+      if (result.recordset.length > 0) {
+        return result.recordset[0];
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.error("Error fetching user by ID:", e);
+      throw e;
+    } finally {
+      pool.close();
+    }
+  },
+  updateUserProfile: async (userId, updatedUserData) => {
+    const { Username, Img, Password } = updatedUserData;
+    const query =
+      "UPDATE users SET Username = ?, Img = ?, Password = ? WHERE id = ?";
+    const values = [Username, Img, Password, userId];
+    return new Promise((resolve, reject) => {
+      connection.query(query, values, (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results);
         }
-      },
-      isKeyValid: (key) => {
-        console.log("isKeyValid" + key);
-        let result = key === "ndkl-dkfd-ekrg-ewld";
-        console.log("isKeyValid result");
+      });
+    });
+  },
+  deleteUserById: async (id) => {
+    try {
+      await pool.connect();
+
+      const query = `DELETE FROM users WHERE id = '${id}';`;
+
+      const request = pool.request();
+      const result = await request.query(query);
+      console.log(result);
+      if (result.rowsAffected > 0) {
         return result;
-      },
-       comparePasswords: async (inputPassword, hashedPassword) => {
-        return await bcrypt.compare(inputPassword, hashedPassword);
-      },
-      filename: function (req, file, cb) {
-        const sanitizedFilename = sanitize(file.originalname);
-        cb(null, sanitizedFilename);
-      },
-}
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.error("Error fetching user by ID:", e);
+      throw e;
+    } finally {
+      pool.close();
+    }
+  },
+  deleteUserByUserKey: async (userKey) => {
+    try {
+      await pool.connect();
+
+      const query = `DELETE FROM users WHERE userKey = '${userKey}'`;
+
+      const request = pool.request();
+      const result = await request.query(query);
+      console.log(result);
+      if (result.rowsAffected > 0) {
+        return result;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.error("Error fetching user by Key:", e);
+      throw e;
+    } finally {
+      pool.close();
+    }
+  },
+
+  generateKey: () => {
+    return uuidv4();
+  },
+  isKeyValid: (key) => {
+    return key === "ndkl-dkfd-ekrg-ewld";
+  },
+  comparePasswords: async (inputPassword, hashedPassword) => {
+    return await bcrypt.compare(inputPassword, hashedPassword);
+  },
+};

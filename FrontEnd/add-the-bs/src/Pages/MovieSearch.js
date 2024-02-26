@@ -2,9 +2,9 @@ import {React, useEffect, useState} from 'react';
 import Movie from '../Components/Movie';
 
 const MovieSearch = () => {
-    const [movieData, setMovieData] = useState([]);
-    const [movieSearch, setMovieSearch] = useState('');
-    const [isLoading, setIsLoading] = useState(true);
+  const [movieData, setMovieData] = useState([]);
+  const [movieSearch, setMovieSearch] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         if(movieSearch.trim() === ''){
@@ -62,5 +62,3 @@ const MovieSearch = () => {
         </>
     )
 }
-
-export default MovieSearch

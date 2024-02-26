@@ -5,6 +5,7 @@ const Admin = () => {
   //   const [reviews, setReviews] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState(1);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     fetchUsers();
@@ -17,22 +18,37 @@ const Admin = () => {
   }, [users]);
 
   const fetchUsers = async () => {
-    const response = await fetch("http://localhost:3001/users");
+    const response = await fetch("http://localhost:3306/users");
     const data = await response.json();
-    setUsers(data);
+    setUsers(data.slice().reverse());
   };
 
   //   const fetchReviews = async () => {
-  //     const response = await fetch("http://localhost:3001/reviews");
+  //     const response = await fetch("http://localhost:3306/reviews");
   //     const data = await response.json();
   //     setReviews(data);
   //   };
   const changeTab = (tabNumber) => {
     setActiveTab(tabNumber);
   };
-  const deleteUser = (id) => {
-    console.log("Deleting user: ", id);
+  const deleteUser = async (user) => {
+    console.log("Deleting user: ", user);
     //API call here
+    if (user.userKey !== null) {
+      const response = await fetch(
+        `http://localhost:3306/user/delete/key/${user.userKey}`,
+        {
+          method: "DELETE",
+        }
+      );
+      console.log(response);
+      if (response.ok) {
+        setMessage("User " + user.Email + " deleted Successfully");
+        fetchUsers();
+      }
+    } else {
+      setMessage("YOU CANNOT DELETE ONE OF 1k IMPORTED USERS");
+    }
   };
 
   return (
@@ -60,12 +76,13 @@ const Admin = () => {
           </div>
         ) : (
           <>
+            {message && <h2>{message}</h2>}
             <div className="flex flex-wrap -mb-px font-medium text-center my-5 text-xl">
               <button
                 className={`px-4 mx-5 py-2 rounded ${
                   activeTab === 1
                     ? "border-b-2 border-blue-500 bg-blue-500 text-white"
-                    : "border-b-4 border-blue-500 text-gray-800"
+                    : "border-b-4 border-blue-500 text-gray-800 text-white"
                 }`}
                 onClick={() => changeTab(1)}
               >
@@ -75,7 +92,7 @@ const Admin = () => {
                 className={`px-4 mx-5 py-2 rounded ${
                   activeTab === 2
                     ? "border-b-2 border-blue-500 bg-blue-500 text-white"
-                    : "border-blue-500 text-gray-800 border-b-4"
+                    : "border-blue-500 text-gray-800 border-b-4 text-white"
                 }`}
                 onClick={() => changeTab(2)}
               >
@@ -86,30 +103,52 @@ const Admin = () => {
             <div>
               {activeTab === 1 ? (
                 <ul className="mt-5 container flex flex-col text-base">
-                  <li className="grid grid-cols-4 gap-4 text-lg text-center">
+                  <li className="grid grid-cols-5 gap-4 text-lg text-center">
                     <div>
                       <b>Email</b>
                     </div>
                     <div>
-                      <b>User ID</b>
+                      <b>User ID Keys</b>
                     </div>
                     <div>
-                      <b>User Key</b>
+                      <b>Full Name</b>
+                    </div>
+                    <div>
+                      <b>Address</b>
                     </div>
                   </li>
                   <hr className="mb-5" />
 
                   {users.map((user) => (
                     <>
-                      <li key={user._id} className="grid grid-cols-4 gap-4">
-                        <div className="mr-6">{user.Gmail}</div>
-                        <div>{user._id}</div>
-                        <div>{user.Key}</div>
+                      <li key={user.id} className="grid grid-cols-5 gap-4">
+                        <div className="mr-6">{user.Email}</div>
+                        <div>
+                          {user.userKey ? <>{user.userKey}</> : <>NO KEY</>}
+                        </div>
+                        <div>
+                          {user.fname && user.lname ? (
+                            <>
+                              {user.fname} {user.lname}
+                            </>
+                          ) : (
+                            <>NO NAME</>
+                          )}
+                        </div>
+                        <div>
+                          {user.city && user.street && user.state ? (
+                            <>
+                              {user.street} {user.city} {user.state}
+                            </>
+                          ) : (
+                            <>NO ADDRESS</>
+                          )}
+                        </div>
                         <div className="flex justify-center">
                           <button
                             type="button"
                             className="text-red-700 w-40 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
-                            onClick={() => deleteUser(user._id)}
+                            onClick={() => deleteUser(user)}
                           >
                             Delete User
                           </button>
