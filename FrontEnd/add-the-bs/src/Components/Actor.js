@@ -17,7 +17,7 @@ const Actor = ({ actor }) => {
                 return "";
             }
             const response = await fetch(
-                `http://localhost:3001/MovieDB/Poster${posterUrl}`
+                `http://localhost:3306/MovieDB/Poster${posterUrl}`
             );
             const data = await response.json();
             //console.log("actor image url is: ", data);

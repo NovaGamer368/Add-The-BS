@@ -12,7 +12,7 @@ const ActorSearch = () => {
             return;
         }
         setIsLoading(true);
-        fetch(`http://localhost:3001/MovieDB/ActorName/${actorSearch}`)
+        fetch(`http://localhost:3306/MovieDB/ActorName/${actorSearch}`)
             .then(response => response.json())
             .then(data => {
                 setactorData(data);

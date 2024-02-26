@@ -12,7 +12,7 @@ const MovieSearch = () => {
             return;
         }
         setIsLoading(true);
-        fetch(`http://localhost:3001/MovieDB/MovieName/${movieSearch}`)
+        fetch(`http://localhost:3306/MovieDB/MovieName/${movieSearch}`)
             .then(response => response.json())
             .then(data => {
                 setMovieData(data);

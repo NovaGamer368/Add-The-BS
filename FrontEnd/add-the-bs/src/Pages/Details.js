@@ -39,9 +39,9 @@ const Details = () => {
     try {
       let url;
       if (backdropUrl) {
-        url = `http://localhost:3001/MovieDB/Poster${backdropUrl}`;
+        url = `http://localhost:3306/MovieDB/Poster${backdropUrl}`;
       } else if (posterUrl) {
-        url = `https://localhost:3001/MovieDB/Poster${posterUrl}`;
+        url = `https://localhost:3306/MovieDB/Poster${posterUrl}`;
       } else {
         return "";
       }
