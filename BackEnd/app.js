@@ -19,7 +19,7 @@ app.use(express.json());
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "public/images/profile-pictures");
+    cb(null, "public/profile-pictures");
   },
   filename: function (req, file, cb) {
     const sanitizedFilename = sanitize(file.originalname);
@@ -45,7 +45,7 @@ app.post("/createUser", async (req, res) => {
   try {
     const key = await dal.generateKey();
     // console.log(email, "  |  ", key, "  |  ", email, "  |  ", password);
-    // await sql.query`INSERT INTO Users (id, Email, Username, Img, Password) VALUES ('${key}', '${email}', '${username}', '/images/profile-pictures/default-user.png', '${hashedPassword}')`;
+    // await sql.query`INSERT INTO Users (id, Email, Username, Img, Password) VALUES ('${key}', '${email}', '${username}', '/public/profile-pictures/default-user.png', '${hashedPassword}')`;
     const result = await dal.createUser(email, key, email, password);
     // console.log("Create User Result:", result);
 

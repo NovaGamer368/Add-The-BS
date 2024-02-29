@@ -22,7 +22,7 @@ exports.DAL = {
       await pool.connect();
       // console.log(pool);
 
-      const query = `INSERT INTO users (userKey, email, username, img, password) VALUES ('${key}', '${email}', '${username}', '/images/profile-pictures/default-user.png', '${hashedPassword}')`;
+      const query = `INSERT INTO users (userKey, email, username, img, password) VALUES ('${key}', '${email}', '${username}', '/public/profile-pictures/default-user.png', '${hashedPassword}')`;
       // console.log("Testing query: ", query);
 
       const request = pool.request();
@@ -54,11 +54,11 @@ exports.DAL = {
       pool.close();
     }
   },
-  getUserById: async (userKey) => {
+  getUserById: async (userid) => {
     try {
       await pool.connect();
 
-      const query = ` Select * from Users where userKey = '${userKey}'`;
+      const query = ` Select * from Users where userid = '${userid}'`;
 
       const request = pool.request();
       const result = await request.query(query);

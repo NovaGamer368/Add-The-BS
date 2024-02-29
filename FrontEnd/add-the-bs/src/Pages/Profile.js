@@ -4,15 +4,16 @@ import { Link, NavLink } from "react-router-dom";
 function Profile() {
   const [user, setUser] = useState(null);
   const [userImg, setUserImg] = useState("");
-  const userId = sessionStorage.getItem("userId");
+  const userId = sessionStorage.getItem("sessionKey");
   const isAdmin = user && user.Key === "a84640d6-1c42-41aa-a53f-783edd2b4e64";
-  const loggedInUserId = sessionStorage.getItem("userId");
+  const loggedInUserId = sessionStorage.getItem("sessionKey");
 
   useEffect(() => {
     console.log("Fetching user data...");
     fetch(`http://localhost:3306/user/${userId}`, {
       method: "GET",
       credentials: "include",
+      
     })
       .then((response) => response.json())
       .then((data) => {
@@ -39,9 +40,6 @@ function Profile() {
               <div>
                 <img src={userImg} alt="Profile" />
                 <h3>{user.UserName}</h3>
-                <p>Pronouns: {user.Name}</p>
-                <p>Location: {isAdmin ? user.Location : isAdmin}</p>
-                <p>Bio: {user.Bio}</p>
                 <Link to="/updateUser">
                   <button>Edit Profile</button>
                 </Link>
