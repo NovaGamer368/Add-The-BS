@@ -15,6 +15,7 @@ const config = {
 };
 const pool = new sql.ConnectionPool(config);
 exports.DAL = {
+  //User CRUD
   createUser: async (email, key, username, password) => {
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -82,7 +83,7 @@ exports.DAL = {
 
       const request = pool.request();
       const result = await request.query(query);
-      console.log(result);
+
       if (result.recordset.length > 0) {
         return result.recordset[0];
       } else {
@@ -149,6 +150,44 @@ exports.DAL = {
       console.error("Error fetching user by Key:", e);
       throw e;
     } finally {
+      pool.close();
+    }
+  },
+  //Review CRUD
+  createReview: async (movieId, userKey, comment, starRating) => {
+    try {
+      await pool.connect();
+      // console.log(pool);
+
+      const query = `INSERT INTO reviews (movieId, userKey, comment, starRating) VALUES ('${movieId}', '${userKey}', '${comment}', ${starRating})`;
+      // console.log("Testing query: ", query);
+
+      const request = pool.request();
+      // console.log("Request going out", request);
+      await request.query(query);
+      // console.log("query ran: ", response);
+
+      return true;
+    } catch (e) {
+      console.log(e);
+      return false;
+    } finally {
+      pool.close();
+    }
+  },
+  getAllUsers: async () => {
+    try {
+      await pool.connect();
+
+      const query = `SELECT * FROM reviews`;
+
+      const result = await pool.query(query);
+      return result.recordset;
+    } catch (error) {
+      console.error("Error fetching all users:", error);
+      throw error;
+    } finally {
+      // Close the connection pool
       pool.close();
     }
   },

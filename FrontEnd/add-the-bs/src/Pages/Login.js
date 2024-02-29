@@ -48,9 +48,10 @@ const Login = () => {
         });
         const data = await response.json();
         if (data.success) {
+          console.log("data is:", data);
           sessionStorage.setItem("sessionKey", data.key);
-          sessionStorage.setItem("userId", data.userId);
-          navigate("/home");
+          sessionStorage.setItem("userId", data.id);
+          // navigate("/home");
         } else {
           setErrors({
             apiError: `Login failed: ${data.Message}`,

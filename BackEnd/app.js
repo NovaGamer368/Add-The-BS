@@ -139,6 +139,45 @@ app.delete("/user/delete/key/:key", async (req, res) => {
   }
 });
 
+//CREATE REVIEW
+app.post("/createReview", async (req, res) => {
+  const { movieId, userKey, comment, starRating } = req.body;
+
+  try {
+    const key = await dal.generateKey();
+
+    const result = await dal.createReview(
+      movieId,
+      userKey,
+      comment,
+      starRating
+    );
+
+    if (result) {
+      res.json({ success: true, key: key });
+    } else {
+      res.json({ success: false, Message: "Failed to create user" });
+    }
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).json({
+      success: false,
+      Message: "An error occurred while creating the user",
+    });
+  }
+});
+
+//GET all REVIEWS
+app.get("/reviews", async (req, res) => {
+  try {
+    const users = await dal.getAllReviews();
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Failed to fetch users" });
+  }
+});
+
 //ADMIN STUFF???
 app.post("/createKey", async (req, res) => {
   // const email = req.body.email;
@@ -170,14 +209,14 @@ app.post("/login", async (req, res) => {
       return res.json({ success: false, Message: "User not found" });
     }
 
-    console.log("The user ", user.password);
+    console.log("The user ", user);
     const isValidPassword = await dal.comparePasswords(password, user.password);
 
     if (!isValidPassword) {
       return res.json({ success: false, Message: "Invalid password" });
     }
 
-    res.json({ success: true, key: user.id });
+    res.json({ success: true, key: user.userid });
   } catch (error) {
     console.error("Error during login:", error);
     res
