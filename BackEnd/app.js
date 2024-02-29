@@ -178,6 +178,40 @@ app.get("/reviews", async (req, res) => {
   }
 });
 
+//GETS Review BY UserKey
+app.get("/review/key/:key", async (req, res) => {
+  try {
+    let key = req.params.key;
+    let user = await dal.getReviewsByUserKey(key);
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+//GETS Review BY movieId
+app.get("/review/movie/:movieId", async (req, res) => {
+  try {
+    let movieId = req.params.movieId;
+    let user = await dal.getReviewsByMovieId(movieId);
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+//GETS Review BY id
+app.get("/review/:id", async (req, res) => {
+  try {
+    let id = req.params.id;
+    let user = await dal.getReviewById(id);
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 //ADMIN STUFF???
 app.post("/createKey", async (req, res) => {
   // const email = req.body.email;

@@ -175,6 +175,7 @@ exports.DAL = {
       pool.close();
     }
   },
+
   getAllReviews: async () => {
     try {
       await pool.connect();
@@ -188,6 +189,97 @@ exports.DAL = {
       throw error;
     } finally {
       // Close the connection pool
+      pool.close();
+    }
+  },
+  getReviewsByUserKey: async (userKey) => {
+    try {
+      await pool.connect();
+
+      const query = `SELECT * FROM reviews WHERE userKey = '${userKey}'`;
+
+      const result = await pool.query(query);
+      return result.recordset;
+    } catch (error) {
+      console.error("Error fetching all users:", error);
+      throw error;
+    } finally {
+      // Close the connection pool
+      pool.close();
+    }
+  },
+  getReviewsByMovieId: async (movieId) => {
+    try {
+      await pool.connect();
+
+      const query = `SELECT * FROM reviews WHERE movieId = '${movieId}'`;
+
+      const result = await pool.query(query);
+      return result.recordset;
+    } catch (error) {
+      console.error("Error fetching all users:", error);
+      throw error;
+    } finally {
+      // Close the connection pool
+      pool.close();
+    }
+  },
+  getReviewById: async (id) => {
+    try {
+      await pool.connect();
+
+      const query = `SELECT * FROM reviews WHERE id = ${id}`;
+
+      const result = await pool.query(query);
+      return result.recordset;
+    } catch (error) {
+      console.error("Error fetching all users:", error);
+      throw error;
+    } finally {
+      // Close the connection pool
+      pool.close();
+    }
+  },
+
+  deleteReviewById: async (id) => {
+    try {
+      await pool.connect();
+
+      const query = `DELETE FROM users WHERE id = '${id}';`;
+
+      const request = pool.request();
+      const result = await request.query(query);
+      console.log(result);
+      if (result.rowsAffected > 0) {
+        return result;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.error("Error fetching user by ID:", e);
+      throw e;
+    } finally {
+      pool.close();
+    }
+  },
+  deleteReviewByUserKey: async (userKey) => {
+    try {
+      await pool.connect();
+
+      const query = `DELETE FROM users WHERE userKey = '${userKey}'`;
+
+      const request = pool.request();
+      const result = await request.query(query);
+      console.log(result);
+      if (result.rowsAffected > 0) {
+        return result;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.error("Error fetching user by Key:", e);
+      throw e;
+    } finally {
       pool.close();
     }
   },
