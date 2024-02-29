@@ -211,6 +211,19 @@ app.get("/review/:id", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+//DELETE review by ID
+app.delete("/review/delete/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    console.log("deleting review: ", id);
+
+    await dal.deleteReviewById(id);
+    res.json({ message: "id Deleted Successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 //ADMIN STUFF???
 app.post("/createKey", async (req, res) => {

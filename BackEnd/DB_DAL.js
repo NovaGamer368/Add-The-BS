@@ -245,7 +245,7 @@ exports.DAL = {
     try {
       await pool.connect();
 
-      const query = `DELETE FROM users WHERE id = '${id}';`;
+      const query = `DELETE FROM reviews WHERE id = '${id}';`;
 
       const request = pool.request();
       const result = await request.query(query);

@@ -53,6 +53,21 @@ const Admin = () => {
       setMessage("YOU CANNOT DELETE ONE OF 1k IMPORTED USERS");
     }
   };
+  const deleteReview = async (review) => {
+    console.log("Deleting user: ", review);
+    //API call here
+    const response = await fetch(
+      `http://localhost:3306/review/delete/${review.id}`,
+      {
+        method: "DELETE",
+      }
+    );
+    console.log(response);
+    if (response.ok) {
+      setMessage("Review " + review.id + " deleted Successfully");
+      fetchReviews();
+    }
+  };
 
   return (
     <div>
@@ -205,7 +220,7 @@ const Admin = () => {
                           <button
                             type="button"
                             className="text-red-700 w-40 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
-                            onClick={() => deleteUser(review)}
+                            onClick={() => deleteReview(review)}
                           >
                             Delete review
                           </button>
