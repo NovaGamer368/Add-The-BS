@@ -175,7 +175,7 @@ exports.DAL = {
       pool.close();
     }
   },
-  getAllUsers: async () => {
+  getAllReviews: async () => {
     try {
       await pool.connect();
 

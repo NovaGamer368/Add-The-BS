@@ -2,32 +2,35 @@ import React, { useEffect, useState } from "react";
 
 const Admin = () => {
   const [users, setUsers] = useState(null);
-  //   const [reviews, setReviews] = useState(null);
+  const [reviews, setReviews] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState(1);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
     fetchUsers();
+    fetchReviews();
   }, []);
 
   useEffect(() => {
-    if (users != null) {
+    if (users != null && reviews != null) {
       setIsLoading(false);
     }
-  }, [users]);
+  }, [users, reviews]);
 
   const fetchUsers = async () => {
     const response = await fetch("http://localhost:3306/users");
     const data = await response.json();
+    console.log(data);
     setUsers(data.slice().reverse());
   };
+  const fetchReviews = async () => {
+    const response = await fetch("http://localhost:3306/reviews");
+    const data = await response.json();
+    console.log(data);
+    setReviews(data.slice().reverse());
+  };
 
-  //   const fetchReviews = async () => {
-  //     const response = await fetch("http://localhost:3306/reviews");
-  //     const data = await response.json();
-  //     setReviews(data);
-  //   };
   const changeTab = (tabNumber) => {
     setActiveTab(tabNumber);
   };
@@ -101,7 +104,7 @@ const Admin = () => {
             </div>
 
             <div>
-              {activeTab === 1 ? (
+              {activeTab === 1 && (
                 <ul className="mt-5 container flex flex-col text-base">
                   <li className="grid grid-cols-5 gap-4 text-lg text-center">
                     <div>
@@ -158,12 +161,60 @@ const Admin = () => {
                     </>
                   ))}
                 </ul>
-              ) : (
-                <>
-                  <div>
-                    USER REVIEWS ADMIN PAGE FOR DELETING CERTAIN REVIEWS :(
-                  </div>
-                </>
+              )}
+              {activeTab === 2 && (
+                <ul className="mt-5 container flex flex-col text-base">
+                  <li className="grid grid-cols-5 gap-4 text-lg text-center">
+                    <div>
+                      <b>MovieId</b>
+                    </div>
+                    <div>
+                      <b>User Keys</b>
+                    </div>
+                    <div>
+                      <b>Comment</b>
+                    </div>
+                    <div>
+                      <b>Star Rating</b>
+                    </div>
+                  </li>
+                  <hr className="mb-5" />
+
+                  {reviews.map((review) => (
+                    <>
+                      <li key={review.id} className="grid grid-cols-5 gap-4">
+                        <div className="mr-6">{review.movieId}</div>
+                        <div>
+                          {review.userKey ? <>{review.userKey}</> : <>NO KEY</>}
+                        </div>
+                        <div>
+                          {review.comment ? (
+                            <>{review.comment}</>
+                          ) : (
+                            <>NO COMMENT</>
+                          )}
+                        </div>
+                        <div>
+                          {review.starRating ? (
+                            <>{review.starRating}</>
+                          ) : (
+                            <>NO Star Rating Found</>
+                          )}
+                        </div>
+                        <div className="flex justify-center">
+                          <button
+                            type="button"
+                            className="text-red-700 w-40 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
+                            onClick={() => deleteUser(review)}
+                          >
+                            Delete review
+                          </button>
+                        </div>
+                      </li>
+                      <hr className="mb-5" />
+                    </>
+                  ))}
+                </ul>
               )}
             </div>
           </>
