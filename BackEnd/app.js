@@ -19,7 +19,7 @@ app.use(express.json());
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "public/images/profile-pictures");
+    cb(null, "public/profile-pictures");
   },
   filename: function (req, file, cb) {
     const sanitizedFilename = sanitize(file.originalname);
@@ -45,7 +45,7 @@ app.post("/createUser", async (req, res) => {
   try {
     const key = await dal.generateKey();
     // console.log(email, "  |  ", key, "  |  ", email, "  |  ", password);
-    // await sql.query`INSERT INTO Users (id, Email, Username, Img, Password) VALUES ('${key}', '${email}', '${username}', '/images/profile-pictures/default-user.png', '${hashedPassword}')`;
+    // await sql.query`INSERT INTO Users (id, Email, Username, Img, Password) VALUES ('${key}', '${email}', '${username}', '/public/profile-pictures/default-user.png', '${hashedPassword}')`;
     const result = await dal.createUser(email, key, email, password);
     // console.log("Create User Result:", result);
 
@@ -139,6 +139,92 @@ app.delete("/user/delete/key/:key", async (req, res) => {
   }
 });
 
+//CREATE REVIEW
+app.post("/createReview", async (req, res) => {
+  const { movieId, userKey, comment, starRating } = req.body;
+
+  try {
+    const key = await dal.generateKey();
+
+    const result = await dal.createReview(
+      movieId,
+      userKey,
+      comment,
+      starRating
+    );
+
+    if (result) {
+      res.json({ success: true, key: key });
+    } else {
+      res.json({ success: false, Message: "Failed to create user" });
+    }
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).json({
+      success: false,
+      Message: "An error occurred while creating the user",
+    });
+  }
+});
+
+//GET all REVIEWS
+app.get("/reviews", async (req, res) => {
+  try {
+    const users = await dal.getAllReviews();
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Failed to fetch users" });
+  }
+});
+
+//GETS Review BY UserKey
+app.get("/review/key/:key", async (req, res) => {
+  try {
+    let key = req.params.key;
+    let user = await dal.getReviewsByUserKey(key);
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+//GETS Review BY movieId
+app.get("/review/movie/:movieId", async (req, res) => {
+  try {
+    let movieId = req.params.movieId;
+    let user = await dal.getReviewsByMovieId(movieId);
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+//GETS Review BY id
+app.get("/review/:id", async (req, res) => {
+  try {
+    let id = req.params.id;
+    let user = await dal.getReviewById(id);
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+//DELETE review by ID
+app.delete("/review/delete/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    console.log("deleting review: ", id);
+
+    await dal.deleteReviewById(id);
+    res.json({ message: "id Deleted Successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 //ADMIN STUFF???
 app.post("/createKey", async (req, res) => {
   // const email = req.body.email;
@@ -170,14 +256,14 @@ app.post("/login", async (req, res) => {
       return res.json({ success: false, Message: "User not found" });
     }
 
-    console.log("The user ", user.password);
+    console.log("The user ", user);
     const isValidPassword = await dal.comparePasswords(password, user.password);
 
     if (!isValidPassword) {
       return res.json({ success: false, Message: "Invalid password" });
     }
 
-    res.json({ success: true, key: user.id });
+    res.json({ success: true, key: user.userid });
   } catch (error) {
     console.error("Error during login:", error);
     res

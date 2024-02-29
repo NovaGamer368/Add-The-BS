@@ -1,6 +1,30 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+  const authorizedKeys = ["52007", ""]; // Add the userid for the "acount" you use for testing the most.
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("sessionKey");
+    setIsLoggedIn(false);
+    navigate("/");
+  };
+
+  useEffect(() => {
+    const sessionKey = sessionStorage.getItem("sessionKey");
+    if (sessionKey) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const isAuthorized = () => {
+    const sessionKey = sessionStorage.getItem("sessionKey");
+    return authorizedKeys.includes(sessionKey); 
+  };
+
   return (
     <>
       <div>
@@ -12,13 +36,26 @@ const Navbar = () => {
               </span>
             </a>
             <div className="flex items-center">
-              <a href="/login" className="text-xl font-medium text-blue-600 p-3 dark:text-blue-500 hover:underline">
-                Login
-              </a>
-              <p className="text-3xl dark:text-zinc-100"> | </p>
-              <a href="/signup"className="text-xl font-medium text-blue-600 p-3 dark:text-blue-500 hover:underline">
-                Sign Up
-              </a>
+              {isLoggedIn ? (
+                <>
+                  <a href="/profile" className="text-xl font-medium text-blue-600 p-3 dark:text-blue-500 hover:underline">
+                    Profile
+                  </a>
+                  <button onClick={handleLogout} className="text-xl font-medium text-blue-600 p-3 dark:text-blue-500 hover:underline">
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <a href="/login" className="text-xl font-medium text-blue-600 p-3 dark:text-blue-500 hover:underline">
+                    Login
+                  </a>
+                  <p className="text-3xl dark:text-zinc-100"> | </p>
+                  <a href="/signup" className="text-xl font-medium text-blue-600 p-3 dark:text-blue-500 hover:underline">
+                    Sign Up
+                  </a>
+                </>
+              )}
             </div>
           </div>
         </nav>
@@ -27,12 +64,12 @@ const Navbar = () => {
             <div className="flex items-center">
               <ul className="flex flex-row mt-0 mr-6 space-x-8 text-sm font-medium">
                 <li>
-                  <a href="/home" className="text-gray-900 dark:text-white hover:underline"aria-current="page">
+                  <a href="/home" className="text-gray-900 dark:text-white hover:underline" aria-current="page">
                     Home
                   </a>
                 </li>
                 <li>
-                  <a href="/movie"className="text-gray-900 dark:text-white hover:underline">
+                  <a href="/movie" className="text-gray-900 dark:text-white hover:underline">
                     Movie Search
                   </a>
                 </li>
@@ -46,11 +83,13 @@ const Navbar = () => {
                     Genre
                   </a>
                 </li>
-                <li>
-                  <a href="/admin" className="text-gray-900 dark:text-white hover:underline">
-                    Admin Testing
-                  </a>
-                </li>
+                {isLoggedIn && isAuthorized() && ( 
+                  <li>
+                    <a href="/admin" className="text-gray-900 dark:text-white hover:underline">
+                      Admin Testing
+                    </a>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
