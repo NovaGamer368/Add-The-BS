@@ -1,6 +1,5 @@
 import { React, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { red } from "tailwindcss/colors";
 import { FaStar } from "react-icons/fa";
 
 const Details = () => {
@@ -17,7 +16,7 @@ const Details = () => {
 
 
   useEffect(() => {
-    fetch(`http://localhost:3001/MovieDB/MovieId/${params.id}`)
+    fetch(`http://localhost:3306/MovieDB/MovieId/${params.id}`)
       .then((response) => response.json())
       .then((data) => {
         setMovieData(data);
@@ -114,7 +113,6 @@ const Details = () => {
 
   if (Object.keys(movieData).length > 0) {
 
-   
     return (
       <div style={{display: "flex", justifyContent: "space-between", alignItems: "flex-start", backgroundColor: "#282c34", minHeight: "100vh", padding: "20px",}}>
         <div style={{ flex: "0 0 auto", marginRight: "20px" }}>
