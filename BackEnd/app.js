@@ -97,19 +97,43 @@ app.get("/user/:id", async (req, res) => {
 });
 
 //UPDATE
-app.put("/user/:id", upload.single("Img"), async (req, res) => {
-  try {
-    const userId = req.params.id;
-    const updatedUserData = req.body;
-    if (req.file) {
-      updatedUserData.Img = `./profile-pictures/${req.file.filename}`;
-    }
+// app.put("/user/:id", upload.single("Img"), async (req, res) => {
+//   try {
+//     const userId = req.params.id;
+//     const updatedUserData = req.body;
+//     if (req.file) {
+//       updatedUserData.Img = `./profile-pictures/${req.file.filename}`;
+//     }
 
-    const updatedUser = await dal.updateUserProfile(userId, updatedUserData);
-    res.json(updatedUser);
+//     const updatedUser = await dal.updateUserProfile(userId, updatedUserData);
+//     res.json(updatedUser);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// });
+app.put("/user/resetPassword", async (req, res) => {
+  const { userKey, password } = req.body;
+  console.log("body: ", req.body);
+  console.log("UserKey: ", userKey);
+  try {
+    const user = await dal.getUserByUserKey(userKey);
+    if (!user) {
+      res.json({ success: false, Message: "User by UserKey not Found" });
+    }
+    const result = await dal.updatePassword(userKey, password);
+    console.log(result);
+    if (result.rowsAffected.length > 0) {
+      res.json({ success: true, Message: "SUCC" });
+    } else {
+      res.json({ success: false, Message: "Failed to update password" });
+    }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("Error updating password user:", error);
+    res.status(500).json({
+      success: false,
+      Message: "An error occurred while updating user password",
+    });
   }
 });
 

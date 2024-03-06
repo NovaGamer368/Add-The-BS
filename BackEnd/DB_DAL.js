@@ -75,6 +75,27 @@ exports.DAL = {
       pool.close();
     }
   },
+  getUserByUserKey: async (userKey) => {
+    try {
+      await pool.connect();
+
+      const query = ` Select * from Users where userKey = '${userKey}'`;
+
+      const request = pool.request();
+      const result = await request.query(query);
+      console.log(result);
+      if (result.recordset.length > 0) {
+        return result.recordset[0];
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.error("Error fetching user by ID:", error);
+      throw error;
+    } finally {
+      pool.close();
+    }
+  },
   getUserByEmail: async (email) => {
     try {
       await pool.connect();
@@ -110,6 +131,27 @@ exports.DAL = {
         }
       });
     });
+  },
+  updatePassword: async (userKey, password) => {
+    try {
+      await pool.connect();
+      const query = `UPDATE users 
+      SET password = '${password}'
+        WHERE userKey = '${userKey}'`;
+      const request = pool.request();
+      const result = await request.query(query);
+      console.log(result);
+      if (result) {
+        return result;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.error("Error on DB_DAL updatePassword: ", e);
+      throw error;
+    } finally {
+      pool.close();
+    }
   },
   deleteUserById: async (id) => {
     try {
