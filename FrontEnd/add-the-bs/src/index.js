@@ -15,8 +15,13 @@ import MovieSearch from "./Pages/MovieSearch";
 import ActorSearch from "./Pages/ActorSearch";
 import GenreDisplay from "./Pages/GenreDisplay";
 import GenreList from "./Pages/GenreList";
+import ResetPassword from "./Pages/ResetPassword";
 
 const router = createBrowserRouter([
+  {
+    path: "/resetPassword",
+    element: (<><ResetPassword /></>)
+  },
   {
     path: "/login",
     element: (<><Login /></>)

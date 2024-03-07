@@ -26,8 +26,8 @@ function Profile() {
   }, [userId]);
 
   useEffect(() => {
-    if (user && user.Img) {
-      setUserImg(`http://localhost:3306${user.Img}`);
+    if (user && user.img) {
+      setUserImg(`http://localhost:3306${user.img}`);
     }
   }, [user]);
 
@@ -39,8 +39,8 @@ function Profile() {
             <div>
               <div>
                 <img src={userImg} alt="Profile" />
-                <h3>{user.UserName}</h3>
-                <Link to="/updateUser">
+                <h3>{user.username}</h3>
+                <Link to="/resetPassword">
                   <button>Edit Profile</button>
                 </Link>
               </div>
