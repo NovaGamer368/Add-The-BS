@@ -39,7 +39,7 @@ function Profile() {
             <div>
               <div>
                 <img src={userImg} alt="Profile" />
-                <h3>{user.UserName}</h3>
+                <h3>{user.username}</h3>
                 <Link to="/updateUser">
                   <button>Edit Profile</button>
                 </Link>
