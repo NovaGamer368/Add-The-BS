@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const ResetPassword = () => {
@@ -7,6 +7,14 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const userKey = sessionStorage.getItem("userKey");
+    if (!userKey) {
+
+      navigate("/profile");
+    }
+  }, [navigate]);
 
   const validateFormValues = () => {
     let isValid = true;
@@ -38,20 +46,21 @@ const ResetPassword = () => {
     e.preventDefault();
     if (validateFormValues()) {
       try {
+        const userKey = sessionStorage.getItem("userKey");
         const response = await fetch("http://localhost:3306/user/resetPassword", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            oldPassword: oldPassword,
-            newPassword: newPassword,
+            userKey: userKey,
+            password: newPassword, 
           }),
         });
-
+  
         const data = await response.json();
         console.log("returned data: ", data);
-
+  
         if (data.success) {
           navigate("/login");
         } else {

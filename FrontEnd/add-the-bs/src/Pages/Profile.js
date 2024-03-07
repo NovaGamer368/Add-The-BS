@@ -6,7 +6,7 @@ function Profile() {
   const [userImg, setUserImg] = useState("");
   const userId = sessionStorage.getItem("sessionKey");
   const isAdmin = user && user.Key === "a84640d6-1c42-41aa-a53f-783edd2b4e64";
-  const loggedInUserId = sessionStorage.getItem("sessionKey");
+  //const loggedInUserId = sessionStorage.getItem("sessionKey");
 
   useEffect(() => {
     console.log("Fetching user data...");
@@ -41,7 +41,7 @@ function Profile() {
                 <img src={userImg} alt="Profile" />
                 <h3>{user.username}</h3>
                 <Link to="/resetPassword">
-                  <button>Edit Profile</button>
+                  <button>Reset Password</button>
                 </Link>
               </div>
               {isAdmin && <div></div>}
