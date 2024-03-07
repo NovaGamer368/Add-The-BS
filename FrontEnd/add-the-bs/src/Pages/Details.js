@@ -94,6 +94,7 @@ const Details = () => {
     const userKey = sessionStorage.getItem("sessionKey");
     const comment = userComment;
     const starRating = selectedStars;
+    console.log("On submit clicked");
     fetch(`http://localhost:3306/createReview`, {
       method: "POST",
       headers: {
@@ -330,14 +331,14 @@ const Details = () => {
                     <div>
                       {review.userKey ? <>{review.userKey}</> : <>NO KEY</>}
                     </div>
-                    <div className="w-64 container text-wrap text-overflow">
+                    <div className="max-w-xs overflow-auto">
                       {review.comment ? (
                         <div>{review.comment}</div>
                       ) : (
                         <>NO COMMENT</>
                       )}
                     </div>
-                    <div>
+                    <div className="flex items-center">
                       {review.starRating ? (
                         <>{review.starRating}</>
                       ) : (

@@ -197,12 +197,15 @@ const Admin = () => {
 
                   {reviews.map((review) => (
                     <>
-                      <li key={review.id} className="grid grid-cols-5 gap-4 p-6 place-items-center">
+                      <li
+                        key={review.id}
+                        className="grid grid-cols-5 gap-4 p-6 place-items-center"
+                      >
                         <div className="mr-6">{review.movieId}</div>
                         <div>
                           {review.userKey ? <>{review.userKey}</> : <>NO KEY</>}
                         </div>
-                        <div>
+                        <div className="max-w-xs overflow-auto">
                           {review.comment ? (
                             <>{review.comment}</>
                           ) : (
