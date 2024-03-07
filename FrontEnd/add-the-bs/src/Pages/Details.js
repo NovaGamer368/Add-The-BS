@@ -1,18 +1,27 @@
 import { React, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
+import Movie from "../Components/Movie";
 
 const Details = () => {
   const params = useParams();
   const [movieData, setMovieData] = useState([]);
+  const [recMovieData, setRecMovieData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRevMoviesLoading, setIsRecMoviesLoading] = useState(true);
   const [posterUrl, setPosterUrl] = useState("");
-  const [comment, setComment] = useState("");
+  const [userComment, setComment] = useState("");
   const [selectedStars, setSelectedStars] = useState(0);
   const [showReviewSection, setShowReviewSection] = useState(false); // State to track whether to show the review section
   const maxCharacters = 120;
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  console.log(movieData.rating / 2)
+  useEffect(() => {
+    const sessionKey = sessionStorage.getItem("sessionKey");
+    if (sessionKey) {
+      setIsLoggedIn(true);
+    }
+  }, []);
 
 
   useEffect(() => {
@@ -26,6 +35,19 @@ const Details = () => {
         console.error(error);
       });
   }, [params.id]);
+
+  useEffect(() => {
+    fetch(`http://localhost:3306/MovieDB/Movie/Similar/${movieData.id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setRecMovieData(data);
+        setIsRecMoviesLoading(false);
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [movieData.id]);
 
   useEffect(() => {
     fetchPoster(movieData.backdrop_path || movieData.poster_path).then((data) => {
@@ -60,12 +82,9 @@ const Details = () => {
     }
   };
 
-
   function Star({ selected = false, onSelect }) {
     return <FaStar color={selected ? "yellow" : "white"} onClick={onSelect} />;
   }
-
-
 
   function StarRating({totalStars = 5}) {
     return(
@@ -77,25 +96,21 @@ const Details = () => {
     )  
   }
 
-
-
   function StarRate({ movieData }) {
     const totalStars = 5;
     const scaledRating = Math.min(5, Math.max(0, movieData.rating / 2)); 
     const fullStars = Math.round(scaledRating); // Round the rating to the nearest number
-  
     const stars = [];
   
     for (let i = 0; i < fullStars; i++) {
       stars.push(<FaStar key={i} color="yellow" />);
     }
-  
     for (let i = stars.length; i < totalStars; i++) {
       stars.push(<FaStar key={i} color="gray" />);
     }
-  
+
     return (
-      <div>
+      <div className="flex flex-row p-1">
         {stars.map((star, index) => (
           <span key={index}>{star}</span>
         ))}
@@ -107,12 +122,40 @@ const Details = () => {
     setShowReviewSection((prev) => !prev);
   };
 
+  function formatDate(dataString) {
+    const date = new Date(dataString);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const year = date.getFullYear();
+    return `${month}-${day}-${year}`;
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const movieId = movieData.id;
+    const userKey = sessionStorage.getItem("sessionKey");
+    const comment = userComment;
+    const starRating = selectedStars;
+    fetch(`http://localhost:3306/createReview`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({movieId, userKey, comment, starRating})
+    })
+    .then(response => response.json())
+    .then(data => {
+    })
+    .catch(e => {
+      console.error(e);
+    });
+  }
+
   if (isLoading) {
     return <h1 className="text-xl text-center">LOADING...</h1>;
   }
 
   if (Object.keys(movieData).length > 0) {
-
     return (
       <div style={{display: "flex", justifyContent: "space-between", alignItems: "flex-start", backgroundColor: "#282c34", minHeight: "100vh", padding: "20px",}}>
         <div style={{ flex: "0 0 auto", marginRight: "20px" }}>
@@ -120,16 +163,16 @@ const Details = () => {
             <img src={posterUrl} className="img-fluid rounded-start" alt="productImg"/>
           </div>
           <div style={{ marginTop: "10px", color: "white", }} >
-            <div className="flex flex-row">
-              <p>Rating: {movieData.rating / 2}: </p>
-            <StarRate movieData={movieData} />
+            <div>
+              <p className="text-2xl">Rating: <StarRate movieData={movieData}/></p>
             </div>
-            
-            <p style={{ fontSize: "20px" }}>Runtime: {movieData.runtime}</p>
-            <p style={{ fontSize: "20px" }}>Released: {movieData.release_date}</p>
-            <button onClick={handleLeaveReviewClick} style={{ backgroundColor: "Blue", border: "rounded" }} className="rounded-lg h-10 w-32">
-            {showReviewSection ? "Cancel" : "Leave a Review"}
-          </button>
+            <p style={{ fontSize: "23px" }}>Runtime: {movieData.runtime} mins</p>
+            <div style={{ fontSize: "23px" }}>Released: {formatDate(movieData.release_date)}</div>
+            {isLoggedIn && (
+              <button onClick={handleLeaveReviewClick} style={{ backgroundColor: "Blue", border: "rounded" }} className="rounded-lg h-10 w-32">
+                {showReviewSection ? "Cancel" : "Leave a Review"}
+              </button>
+            )}
           {showReviewSection && (
             <div>
               <h1 className="mb-4">Leave your review:</h1>
@@ -141,11 +184,11 @@ const Details = () => {
                   Add your comment
                 </label>
                 <div className="mt-2">
-                  <textarea rows={4} name="comment" id="comment" className="block p-2 text-lg w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 " value={comment} onChange={handleCommentChange}/>
+                  <textarea rows={4} name="comment" id="comment" className="block p-2 text-lg w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 " value={userComment} onChange={handleCommentChange}/>
                   <p className="flex pl-96">
-                    {comment.length}/{maxCharacters} characters
+                    {userComment.length}/{maxCharacters} characters
                   </p>
-                  <button style={{ backgroundColor: "red", border: "rounded" }} className="rounded-lg h-10 w-32" >
+                  <button style={{ backgroundColor: "red", border: "rounded" }} className="rounded-lg h-10 w-32" onClick={handleSubmit} disabled={selectedStars !==1 || userComment.length === 0}>
                     Leave review
                   </button>
                 </div>
@@ -155,21 +198,32 @@ const Details = () => {
           </div>
         </div>
         <div style={{ flex: "1 1 auto", color: "white" }}>
-          <h2 style={{ fontSize: "50px", marginBottom: "10px" }}>
-            {movieData.title}
+          <h2 style={{ fontFamily:"revert", fontSize: "70px", marginBottom: "10px" }}>
+            {movieData.title} 
           </h2>
           <h3
-            className="pl-32"
-            style={{ fontSize: "25px", marginBottom: "10px" }}
+            className="pl-32 underline underline-offset-4"
+            style={{ fontFamily:"revert-layer", fontSize: "25px", marginBottom: "10px" }}
           >
             {movieData.tagline}
           </h3>
-          <p className="m-10" style={{ fontSize: "22px" }}>
+          <p className="container w-2/3 text-wrap m-10" style={{ fontSize: "22px" }}>
             {movieData.overview}
           </p>
           <br />
           <p style={{ fontSize: "16px" }}>Actors:{movieData.actor} </p>
           <p style={{ fontSize: "16px" }}>More Like This: </p>
+          {/* {!isRevMoviesLoading && (
+            <div className="container w-2/3 overflow-hidden overflow-x-scroll scroll whitespace-nowrap scroll-smooth ">
+            <ul className="flex">
+              {recMovieData.results?.filter(movie => movie.poster_path !== null).map((movie) => (
+                <li key={movie.id} className="p-9 cursor-pointer hover:scale-105 ease-in-out duration-300">
+                  <Movie movie={movie} />
+                </li>
+              ))}
+            </ul>
+          </div>
+          )} */}
           <br />
 
           Reviews:

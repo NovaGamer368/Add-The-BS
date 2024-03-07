@@ -41,6 +41,7 @@ const Navbar = () => {
                   <a href="/profile" className="text-xl font-medium text-blue-600 p-3 dark:text-blue-500 hover:underline">
                     Profile
                   </a>
+                  <p className="text-3xl dark:text-zinc-100"> | </p>
                   <button onClick={handleLogout} className="text-xl font-medium text-blue-600 p-3 dark:text-blue-500 hover:underline">
                     Logout
                   </button>

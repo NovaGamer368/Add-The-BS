@@ -12,7 +12,7 @@ const Signup = () => {
     let isValid = true;
     const newErrors = {};
     const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*[0-9]).{8,}$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*-_])(?=.*[0-9]).{8,}$/;
 
     if (!emailRegex.test(email)) {
       newErrors.email = "Email must be in a valid format";
