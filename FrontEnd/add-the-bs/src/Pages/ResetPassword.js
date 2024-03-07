@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const ResetPassword = () => {
@@ -7,14 +7,6 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const userKey = sessionStorage.getItem("userKey");
-    if (!userKey) {
-
-      navigate("/profile");
-    }
-  }, [navigate]);
 
   const validateFormValues = () => {
     let isValid = true;
@@ -54,26 +46,31 @@ const ResetPassword = () => {
           },
           body: JSON.stringify({
             userKey: userKey,
-            password: newPassword, 
+            password: newPassword,
           }),
         });
   
         const data = await response.json();
-        console.log("returned data: ", data);
-  
-        if (data.success) {
-          navigate("/login");
+        if (response.ok) {
+          if (data.success) {
+            navigate("/");
+          } else {
+            // Password reset failed, set appropriate error
+            setErrors({
+              apiError: `Reset password failed: ${data.Message}`,
+            });
+          }
         } else {
+          // Handle non-200 HTTP response status
           setErrors({
-            apiError: `Reset password failed: ${data.Message}`,
+            apiError: "An error occurred. Please try again later.",
           });
-          console.log("Reset password failed:", data.Message);
         }
       } catch (error) {
+        // Handle network errors or other exceptions
         setErrors({
           apiError: `An error occurred during password reset: ${error}`,
         });
-        console.error("An error occurred during password reset:", error);
       }
     }
   };
@@ -90,37 +87,37 @@ const ResetPassword = () => {
               )}
               <div>
                 <form onSubmit={handleSubmit}>
-                  <div class="mb-4">
-                    <label for="oldPassword" className="flex mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  <div className="mb-4">
+                    <label htmlFor="oldPassword" className="flex mb-2 text-sm font-medium text-gray-900 dark:text-white">
                       Old Password
                     </label>
                     {errors.oldPassword && (
                       <p className="text-red-500">{errors.oldPassword}</p>
                     )}
-                    <input type="password" id="oldPassword" class="pl-4 border text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} placeholder="Old Password" required/>
+                    <input type="password" id="oldPassword" className="pl-4 border text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} placeholder="Old Password" required/>
                   </div>
                   <hr className="mb-4"/>
-                  <div class="mb-2">
+                  <div className="mb-2">
                     <div className="mb-4">
-                      <label for="newPassword" class="flex mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      <label htmlFor="newPassword" className="flex mb-2 text-sm font-medium text-gray-900 dark:text-white">
                         New Password
                       </label>
                       {errors.newPassword && (
                         <p className="text-red-500">{errors.newPassword}</p>
                       )}
-                      <input type="password" id="newPassword" class="pl-4 border text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="New Password" required/>
+                      <input type="password" id="newPassword" className="pl-4 border text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="New Password" required/>
                     </div>
                     <div>
-                      <label for="confirmPassword" class="flex my-2 text-sm font-medium text-gray-900 dark:text-white">
+                      <label htmlFor="confirmPassword" className="flex my-2 text-sm font-medium text-gray-900 dark:text-white">
                         Confirm Password
                       </label>
                       {errors.confirmPassword && (
                         <p className="text-red-500">{errors.confirmPassword}</p>
                       )}
-                      <input type="password" id="confirmPassword" class="pl-4 border text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirm Password" required/>
+                      <input type="password" id="confirmPassword" className="pl-4 border text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirm Password" required/>
                     </div>
                   </div>
-                  <button type="submit" class="text-white w-full bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                  <button type="submit" className="text-white w-full bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     Reset Password
                   </button>
                 </form>
