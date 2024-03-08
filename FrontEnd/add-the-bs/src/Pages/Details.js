@@ -15,6 +15,8 @@ const Details = () => {
   const [posterUrl, setPosterUrl] = useState("");
   const [userComment, setComment] = useState("");
   const [selectedStars, setSelectedStars] = useState(0);
+  const [movieCredits, setMovieCredits] = useState([]);
+
   const maxCharacters = 120;
 
   useEffect(() => {
@@ -35,6 +37,21 @@ const Details = () => {
         console.error(error);
       });
   }, [params.id]);
+
+  useEffect(() => {
+    fetch(`http://localhost:3306/MovieDB/${params.id}/credits`)
+      .then((response) => response.json())
+      .then((data) => {
+        setMovieCredits(data);
+        console.log("// CREDITS")
+        console.log(data)
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [params.id]);
+
 
   useEffect(() => {
     fetch(`http://localhost:3306/MovieDB/Movie/Similar/${movieData.id}`)
@@ -288,9 +305,17 @@ const Details = () => {
             {movieData.overview}{" "}
           </p>
           <br />
-          <p style={{ fontSize: "16px" }}>Actors: {movieData.actor} </p>
+          <p style={{ fontSize: "18px" }}>Actors:  <br></br>
+            {
+              movieCredits.cast?.map((credit, index) => (
+                <span>{credit.name}, </span>
+              ))
+            }
+          </p>
+          <br>
+          </br>
           <p style={{ fontSize: "16px" }}>More Like This: </p>
-          {/* {!isRevMoviesLoading && (
+          {/* { !isRevMoviesLoading && (
             <div className="container w-2/3 overflow-hidden overflow-x-scroll scroll whitespace-nowrap scroll-smooth ">
             <ul className="flex">
               {recMovieData.results?.filter(movie => movie.poster_path !== null).map((movie) => (
@@ -300,7 +325,7 @@ const Details = () => {
               ))}
             </ul>
           </div>
-          )} */}
+          )}  */}
           <br />
           Reviews:
           <div>

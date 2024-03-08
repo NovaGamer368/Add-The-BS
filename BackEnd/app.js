@@ -401,6 +401,20 @@ app.get("/MovieDB/Poster/:poster", async (req, res) => {
   }
 });
 
+
+app.get("/MovieDB/:movieId/credits", async (req, res) => {
+
+  try {
+    let movieId = req.params.movieId;
+
+    let credits = await movieDB.getMovieActor(movieId);
+    res.json(credits);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error!" });
+  }
+})
+
 app.listen(port, () => {
   console.log(`Server is listening on port: ${port}`);
 });

@@ -227,7 +227,7 @@ class MovieDB_DAL {
         },
       });
       const data = await response.json();
-  
+
       if (response.ok) {
         const { vote_average, ...movieDetails } = data;
         return { ...movieDetails, rating: vote_average };
@@ -285,6 +285,25 @@ class MovieDB_DAL {
       return url;
     } catch (e) {
       console.log("ERROR WITH API:", e.message);
+      throw e;
+    }
+  }
+
+  async getMovieActor(movieId) {
+    try {
+      const url = `${this.baseURL}/movie/${movieId}/credits?language=en-US`;
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${this.apiKey}`,
+          accept: "application/json",
+        },
+      });
+
+      const data = await response.json();
+      return data;
+    } catch (e) {
+      console.log('fuckDex')
       throw e;
     }
   }
